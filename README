@@ -14,7 +14,7 @@ questions on the NaN·tic bug tracker, mailing list,
 wiki or IRC channel:
 
   http://doc.tryton-erp.es/
-  http://bitbucket.org/nantic/<module-name>
+  http://bitbucket.org/trytonspain/account_bank_statement_account
   http://groups.tryton.org/
   http://wiki.tryton.org/
   irc://irc.freenode.net/tryton
@@ -28,7 +28,6 @@ Copyright
 ---------
 
 See COPYRIGHT
-
 
 For more information please visit the NaN·tic web site:
 
