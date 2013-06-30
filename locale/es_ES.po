@@ -1,0 +1,85 @@
+# 
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid ""
+"Account \"%(account)s\" in statement line \"%(line)s\" is the same as the "
+"one configured as credit or debit on journal \"%(journal)s\"."
+msgstr ""
+"Cuenta \"%(account)s\" en línea de extracto \"%(line)s\" es igual al "
+"configurado como crédito o débito en el diario\"%(journal)s\"."
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid "Amount \"%s\" is greater than the amount to pay of invoice."
+msgstr "El importe \"%s\" es más grande que el importe para pagar de factura."
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid "Amount should be a positive or negative value."
+msgstr "El importe debería ser un valor positivo o negativo."
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid "Please provide debit and credit account on statement journal \"%s\"."
+msgstr ""
+"Porfavor configure la cuenta de  débito y de crédito en el diario del "
+"extracto \"%s\"."
+
+msgctxt "field:account.bank.statement.line,lines:"
+msgid "Transactions"
+msgstr "Transacciones"
+
+msgctxt "field:account.bank.statement.move.line,account:"
+msgid "Account"
+msgstr "Cuenta"
+
+msgctxt "field:account.bank.statement.move.line,amount:"
+msgid "Amount"
+msgstr "Importe"
+
+msgctxt "field:account.bank.statement.move.line,create_date:"
+msgid "Create Date"
+msgstr "Fecha de creación"
+
+msgctxt "field:account.bank.statement.move.line,create_uid:"
+msgid "Create User"
+msgstr "Usuario de creación"
+
+msgctxt "field:account.bank.statement.move.line,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:account.bank.statement.move.line,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:account.bank.statement.move.line,id:"
+msgid "ID"
+msgstr "Identificador"
+
+msgctxt "field:account.bank.statement.move.line,line:"
+msgid "Line"
+msgstr "Línea"
+
+msgctxt "field:account.bank.statement.move.line,move:"
+msgid "Account Move"
+msgstr "Apunte"
+
+msgctxt "field:account.bank.statement.move.line,party:"
+msgid "Party"
+msgstr "Tercero"
+
+msgctxt "field:account.bank.statement.move.line,rec_name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:account.bank.statement.move.line,write_date:"
+msgid "Write Date"
+msgstr "Fecha de modificación"
+
+msgctxt "field:account.bank.statement.move.line,write_uid:"
+msgid "Write User"
+msgstr "Usuario modificación"
+
+msgctxt "model:account.bank.statement.move.line,name:"
+msgid "Statement Move Line"
+msgstr "Línea de Movimiento del extracto"
