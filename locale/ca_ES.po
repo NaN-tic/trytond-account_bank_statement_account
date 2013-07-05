@@ -2,7 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-#, fuzzy
 msgctxt "error:account.bank.statement.move.line:"
 msgid ""
 "Account \"%(account)s\" in statement line \"%(line)s\" is the same as the "
@@ -11,94 +10,76 @@ msgstr ""
 "Compte \"%(account)s\" en línia de declaració \"%(line)s\" és el mateix que "
 "el configurat com crèdit o dèbit en revista \"%(journal)s\"."
 
-#, fuzzy
 msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount \"%s\" is greater than the amount to pay of invoice."
 msgstr "L'import \"%s\" és més gran que l'import per pagar de factura."
 
-#, fuzzy
 msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "L'import hauria de ser un valor positiu o negatiu."
 
-#, fuzzy
 msgctxt "error:account.bank.statement.move.line:"
 msgid "Please provide debit and credit account on statement journal \"%s\"."
 msgstr ""
 "Si us plau configuri dèbit i compte de crèdit en revista de declaració "
 "\"%s\"."
 
-#, fuzzy
 msgctxt "field:account.bank.statement.line,lines:"
 msgid "Transactions"
 msgstr "Transaccions"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,account:"
 msgid "Account"
 msgstr "Compte"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,amount:"
 msgid "Amount"
 msgstr "Import"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,create_date:"
 msgid "Create Date"
 msgstr "Data creació"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,create_uid:"
 msgid "Create User"
 msgstr "Usuari creació"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,date:"
 msgid "Date"
 msgstr "Data"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,description:"
 msgid "Description"
 msgstr "Descripció"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,id:"
 msgid "ID"
 msgstr "ID"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,line:"
 msgid "Line"
 msgstr "Línia"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,move:"
 msgid "Account Move"
 msgstr "Apunt"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,party:"
 msgid "Party"
 msgstr "Tercer"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,rec_name:"
 msgid "Name"
 msgstr "Nom"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,write_date:"
 msgid "Write Date"
-msgstr "Data d'escriptura"
+msgstr "Data modificació"
 
-#, fuzzy
 msgctxt "field:account.bank.statement.move.line,write_uid:"
 msgid "Write User"
-msgstr "Usuari d'escriptura"
+msgstr "Usuari modificació"
 
-#, fuzzy
 msgctxt "model:account.bank.statement.move.line,name:"
 msgid "Statement Move Line"
 msgstr "Línia d'extracte bancari"
