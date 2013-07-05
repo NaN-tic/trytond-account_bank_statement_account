@@ -38,7 +38,7 @@ tests_require = ['proteus >= %s.%s, < %s.%s' %
 
 setup(name='%s_%s' % (PREFIX, MODULE),
     version=info.get('version', '0.0.1'),
-    description='',
+    description='Tryton account bank statemenet account module',
     long_description=read('README'),
     author='NaN·tic',
     url='http://www.nan-tic.com/',
