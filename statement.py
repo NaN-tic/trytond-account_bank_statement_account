@@ -5,6 +5,7 @@ from decimal import Decimal
 from trytond.model import ModelView, ModelSQL, fields
 from trytond.pyson import Eval, Not, Equal
 from trytond.pool import Pool, PoolMeta
+from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
 __all__ = ['StatementLine', 'StatementMoveLine']
@@ -19,7 +20,8 @@ class StatementLine:
     __name__ = 'account.bank.statement.line'
 
     lines = fields.One2Many('account.bank.statement.move.line',
-        'line', 'Transactions', states=POSTED_STATES,)
+        'line', 'Transactions', states=POSTED_STATES,
+        context={'amount': Eval('amount'), 'date': Eval('date')})
 
     @classmethod
     def __setup__(cls):
@@ -92,7 +94,15 @@ class StatementMoveLine(ModelSQL, ModelView):
 
     @staticmethod
     def default_amount():
+        if Transaction().context.get('amount'):
+            return Transaction().context.get('amount')
         return Decimal(0)
+
+    @staticmethod
+    def default_date():
+        if Transaction().context.get('date'):
+            return Transaction().context.get('date')
+        return None
 
     def on_change_party(self):
         res = {}
