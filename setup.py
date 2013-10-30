@@ -42,7 +42,8 @@ setup(name='%s_%s' % (PREFIX, MODULE),
     long_description=read('README'),
     author='NaN·tic',
     url='http://www.nan-tic.com/',
-    download_url="https://bitbucket.org/trytonspain/account_bank_statement_account",
+    download_url=("https://bitbucket.org/trytonspain/"
+        "trytond-account_bank_statement_account"),
     package_dir={'trytond.modules.%s' % MODULE: '.'},
     packages=[
         'trytond.modules.%s' % MODULE,
