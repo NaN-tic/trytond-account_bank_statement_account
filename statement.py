@@ -68,7 +68,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         on_change=['amount', 'party', 'account', 'invoice',
             '_parent_line.journal'])
     party = fields.Many2One('party.party', 'Party',
-            on_change=['amount', 'party', 'invoice'])
+            on_change=['account', 'amount', 'party', 'invoice'])
     account = fields.Many2One('account.account', 'Account', required=True,
         on_change=['account', 'invoice'], domain=[
             ('company', '=', Eval('_parent_line', {}).get('company', 0)),
@@ -107,13 +107,12 @@ class StatementMoveLine(ModelSQL, ModelView):
     def on_change_party(self):
         res = {}
         if self.party and self.amount:
-                if self.amount > Decimal("0.0"):
-                    account = self.account or self.party.account_receivable
-                else:
-                    account = self.account or self.party.account_payable
-                res['account'] = account.id
-                res['account.rec_name'] = account.rec_name
-
+            if self.amount > Decimal("0.0"):
+                account = self.account or self.party.account_receivable
+            else:
+                account = self.account or self.party.account_payable
+            res['account'] = account.id
+            res['account.rec_name'] = account.rec_name
         return res
 
     def on_change_amount(self):
