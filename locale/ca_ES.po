@@ -11,10 +11,6 @@ msgstr ""
 "el configurat com crèdit o dèbit en revista \"%(journal)s\"."
 
 msgctxt "error:account.bank.statement.move.line:"
-msgid "Amount \"%s\" is greater than the amount to pay of invoice."
-msgstr "L'import \"%s\" és més gran que l'import per pagar de factura."
-
-msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "L'import hauria de ser un valor positiu o negatiu."
 
@@ -23,6 +19,14 @@ msgid "Please provide debit and credit account on statement journal \"%s\"."
 msgstr ""
 "Si us plau configuri dèbit i compte de crèdit en revista de declaració "
 "\"%s\"."
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid ""
+"The credit or debit account of Journal \"%s\" is not checked as \"Bank "
+"Conciliation\"."
+msgstr ""
+"El compte de crèdit o de dèbit del diari \"%s\" no està marcat com a "
+"\"Conciliació bancària\"."
 
 msgctxt "field:account.bank.statement.line,lines:"
 msgid "Transactions"
@@ -83,3 +87,11 @@ msgstr "Usuari modificació"
 msgctxt "model:account.bank.statement.move.line,name:"
 msgid "Statement Move Line"
 msgstr "Línia d'extracte bancari"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Line Move Line"
+msgstr "Apunt de Línia d'extracte bancari"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Lines"
+msgstr "Línies del extracte"

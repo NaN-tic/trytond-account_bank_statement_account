@@ -85,6 +85,9 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'Amount should be a positive or negative value.'),
         ]
         cls._error_messages.update({
+                'debit_credit_account_not_bank_reconcile': (
+                    'The credit or debit account of Journal "%s" is not '
+                    'checked as "Bank Conciliation".'),
                 'debit_credit_account_statement_journal': ('Please provide '
                     'debit and credit account on statement journal "%s".'),
                 'same_debit_credit_account': ('Account "%(account)s" in '
@@ -225,8 +228,12 @@ class StatementMoveLine(ModelSQL, ModelView):
             account = journal.credit_account
         else:
             account = journal.debit_account
+
         if not account:
             self.raise_user_error('debit_credit_account_statement_journal',
+                journal.rec_name)
+        if not account.banc_reconcile:
+            self.raise_user_error('debit_credit_account_not_bank_reconcile',
                 journal.rec_name)
         if self.account == account:
             self.raise_user_error('same_debit_credit_account', {

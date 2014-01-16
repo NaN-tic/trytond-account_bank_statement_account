@@ -11,10 +11,6 @@ msgstr ""
 "configurado como crédito o débito en el diario\"%(journal)s\"."
 
 msgctxt "error:account.bank.statement.move.line:"
-msgid "Amount \"%s\" is greater than the amount to pay of invoice."
-msgstr "El importe \"%s\" es más grande que el importe para pagar de factura."
-
-msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "El importe debería ser un valor positivo o negativo."
 
@@ -23,6 +19,14 @@ msgid "Please provide debit and credit account on statement journal \"%s\"."
 msgstr ""
 "Porfavor configure la cuenta de  débito y de crédito en el diario del "
 "extracto \"%s\"."
+
+msgctxt "error:account.bank.statement.move.line:"
+msgid ""
+"The credit or debit account of Journal \"%s\" is not checked as \"Bank "
+"Conciliation\"."
+msgstr ""
+"La cuenta de crédito o la de débito del diario \"%s\" no está marcada como "
+"\"Conciliación bancaria\"."
 
 msgctxt "field:account.bank.statement.line,lines:"
 msgid "Transactions"
@@ -83,3 +87,11 @@ msgstr "Usuario modificación"
 msgctxt "model:account.bank.statement.move.line,name:"
 msgid "Statement Move Line"
 msgstr "Línea de Movimiento del extracto"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Line Move Line"
+msgstr "Apunte de línea de extracto bancario"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Lines"
+msgstr "Líneas del extracto"
