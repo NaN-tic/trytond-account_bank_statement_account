@@ -232,7 +232,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         if not account:
             self.raise_user_error('debit_credit_account_statement_journal',
                 journal.rec_name)
-        if not account.banc_reconcile:
+        if not account.bank_reconcile:
             self.raise_user_error('debit_credit_account_not_bank_reconcile',
                 journal.rec_name)
         if self.account == account:
