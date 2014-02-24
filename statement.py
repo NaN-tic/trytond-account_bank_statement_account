@@ -49,8 +49,11 @@ class StatementLine:
     @classmethod
     def cancel(cls, statement_lines):
         super(StatementLine, cls).cancel(statement_lines)
-        for st_line in statement_lines:
-            st_line.reset_account_move()
+        with Transaction().set_context({
+                    'from_account_bank_statement_line': True,
+                    }):
+            for st_line in statement_lines:
+                st_line.reset_account_move()
 
     def reset_account_move(self):
         pool = Pool()
