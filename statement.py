@@ -112,7 +112,7 @@ class StatementMoveLine(ModelSQL, ModelView):
     @staticmethod
     def default_date():
         if Transaction().context.get('date'):
-            return Transaction().context.get('date')
+            return Transaction().context.get('date').date()
         return None
 
     def on_change_party(self):
