@@ -178,6 +178,7 @@ class StatementMoveLine(ModelSQL, ModelView):
             journal=self.line.journal.journal,
             date=self.date,
             lines=move_lines,
+            description=self.description,
             )
         move.save()
         Move.post([move])

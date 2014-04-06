@@ -187,8 +187,14 @@ Create bank statement lines::
     >>> st_move_line.line = statement_line
     >>> st_move_line.account = revenue
     >>> st_move_line.date = today
+    >>> st_move_line.description = 'Description'
     >>> st_move_line.save()
     >>> st_move_line.reload()
     >>> StatementLine.post([statement_line.id], config.context)
     >>> statement_line.company_amount == Decimal('80.0')
+    True
+    >>> st_move_line.move.description == 'Description'
+    True
+    >>> set([x.description for x in st_move_line.move.lines]) == set(
+    ...         ['Description'])
     True
