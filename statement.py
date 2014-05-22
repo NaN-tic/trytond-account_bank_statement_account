@@ -31,7 +31,7 @@ class StatementLine:
     def __setup__(cls):
         super(StatementLine, cls).__setup__()
         if 'lines' not in cls.moves_amount.on_change_with:
-            cls.moves_amount.on_change_with.append('lines')
+            cls.moves_amount.on_change_with.add('lines')
 
     @classmethod
     def post(cls, statement_lines):
@@ -40,6 +40,7 @@ class StatementLine:
                 line.create_move()
         super(StatementLine, cls).post(statement_lines)
 
+    @fields.depends('currency_digits')
     def on_change_with_moves_amount(self):
         res = super(StatementLine, self).on_change_with_moves_amount()
         if getattr(self, 'state', None) == 'posted':
@@ -71,13 +72,10 @@ class StatementMoveLine(ModelSQL, ModelView):
         required=True, ondelete='CASCADE')
     date = fields.Date('Date', required=True)
     amount = fields.Numeric('Amount', required=True,
-        digits=(16, Eval('_parent_statement', {}).get('currency_digits', 2)),
-        on_change=['amount', 'party', 'account', 'invoice',
-            '_parent_line.journal'])
-    party = fields.Many2One('party.party', 'Party',
-            on_change=['account', 'amount', 'party', 'invoice'])
+        digits=(16, Eval('_parent_statement', {}).get('currency_digits', 2)))
+    party = fields.Many2One('party.party', 'Party')
     account = fields.Many2One('account.account', 'Account', required=True,
-        on_change=['account', 'invoice'], domain=[
+        domain=[
             ('company', '=', Eval('_parent_line', {}).get('company', 0)),
             ('kind', '!=', 'view'),
             ])
@@ -115,6 +113,7 @@ class StatementMoveLine(ModelSQL, ModelView):
             return Transaction().context.get('date').date()
         return None
 
+    @fields.depends('account', 'amount', 'party', 'invoice')
     def on_change_party(self):
         res = {}
         if self.party and self.amount:
@@ -126,6 +125,8 @@ class StatementMoveLine(ModelSQL, ModelView):
             res['account.rec_name'] = account.rec_name
         return res
 
+    @fields.depends('amount', 'party', 'account', 'invoice',
+        '_parent_line.journal')
     def on_change_amount(self):
         res = {}
         if self.party and not self.account and self.amount:
@@ -137,6 +138,7 @@ class StatementMoveLine(ModelSQL, ModelView):
             res['account.rec_name'] = account.rec_name
         return res
 
+    @fields.depends('account', 'invoice')
     def on_change_account(self):
         res = {}
         if self.invoice:
