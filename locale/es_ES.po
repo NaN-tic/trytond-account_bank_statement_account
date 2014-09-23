@@ -64,7 +64,7 @@ msgstr "Línea"
 
 msgctxt "field:account.bank.statement.move.line,move:"
 msgid "Account Move"
-msgstr "Apunte"
+msgstr "Asiento"
 
 msgctxt "field:account.bank.statement.move.line,party:"
 msgid "Party"
