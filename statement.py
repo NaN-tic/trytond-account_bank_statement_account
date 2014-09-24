@@ -22,9 +22,9 @@ class StatementLine:
     lines = fields.One2Many('account.bank.statement.move.line',
         'line', 'Transactions', states=POSTED_STATES,
         context={
-            'amount': Eval('amount'),
-            'date': Eval('date'),
-            'moves_amount': Eval('moves_amount'),
+            'bank_statement_amount': Eval('amount'),
+            'bank_statement_date': Eval('date'),
+            'bank_statement_moves_amount': Eval('moves_amount'),
             })
 
     @classmethod
@@ -103,14 +103,16 @@ class StatementMoveLine(ModelSQL, ModelView):
     @staticmethod
     def default_amount():
         context = Transaction().context
-        if 'amount' in context and 'moves_amount' in context:
-            return context['amount'] - context['moves_amount']
+        if ('bank_statement_amount' in context and
+                'bank_statement_moves_amount' in context):
+            return (context['bank_statement_amount']
+                - context['bank_statement_moves_amount'])
         return Decimal(0)
 
     @staticmethod
     def default_date():
-        if Transaction().context.get('date'):
-            return Transaction().context.get('date').date()
+        if Transaction().context.get('bank_statement_date'):
+            return Transaction().context.get('bank_statement_date').date()
         return None
 
     @fields.depends('account', 'amount', 'party', 'invoice')
