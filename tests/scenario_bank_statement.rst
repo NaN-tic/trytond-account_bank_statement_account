@@ -148,7 +148,6 @@ Create move::
     >>> line = move.lines.new()
     >>> line.account = cash
     >>> line.debit = Decimal('80.0')
-    >>> line.party = party
     >>> line2 = move.lines.new()
     >>> line2.account = receivable
     >>> line2.credit = Decimal('80.0')
