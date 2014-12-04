@@ -22,7 +22,7 @@ class StatementLine:
     lines = fields.One2Many('account.bank.statement.move.line',
         'line', 'Transactions', states=POSTED_STATES,
         context={
-            'bank_statement_amount': Eval('amount'),
+            'bank_statement_amount': Eval('company_amount'),
             'bank_statement_date': Eval('date'),
             'bank_statement_moves_amount': Eval('moves_amount'),
             })
@@ -216,8 +216,9 @@ class StatementMoveLine(ModelSQL, ModelView):
         pool = Pool()
         MoveLine = pool.get('account.move.line')
         Currency = Pool().get('currency.currency')
-        amount = Currency.compute(self.line.journal.currency, self.amount,
-            self.line.company.currency)
+        with Transaction().set_context(date=self.line.date.date()):
+            amount = Currency.compute(self.line.journal.currency, self.amount,
+                self.line.company.currency)
         if self.line.journal.currency != self.line.company.currency:
             second_currency = self.line.journal.currency.id
             amount_second_currency = abs(self.amount)
