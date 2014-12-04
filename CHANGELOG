@@ -1,3 +1,6 @@
+* Use line date to compute second currency amount
+* Prefill account moves with company amount as it must be in company currency
+
 Version 3.4.0 - 2014-11-03
 
 Version 3.2.0 - 2014-05-22
