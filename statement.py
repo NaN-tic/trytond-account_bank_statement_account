@@ -261,7 +261,8 @@ class StatementMoveLine(ModelSQL, ModelView):
             debit=amount >= _ZERO and amount or _ZERO,
             credit=amount < _ZERO and -amount or _ZERO,
             account=account,
-            party=self.party if account.party_required else None,
+            party=(self.party or self.line.company.party
+                if account.party_required else None),
             second_currency=second_currency,
             amount_second_currency=amount_second_currency,
             )
