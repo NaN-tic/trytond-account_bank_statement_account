@@ -73,7 +73,13 @@ class StatementMoveLine(ModelSQL, ModelView):
     date = fields.Date('Date', required=True)
     amount = fields.Numeric('Amount', required=True,
         digits=(16, Eval('_parent_statement', {}).get('currency_digits', 2)))
-    party = fields.Many2One('party.party', 'Party')
+    party = fields.Many2One('party.party', 'Party',
+        states={
+            'required': Eval('party_required', False),
+            },
+        depends=['party_required'])
+    party_required = fields.Function(fields.Boolean('Party Required'),
+        'on_change_with_party_required')
     account = fields.Many2One('account.account', 'Account', required=True,
         domain=[
             ('company', '=', Eval('_parent_line', {}).get('company', 0)),
@@ -114,6 +120,12 @@ class StatementMoveLine(ModelSQL, ModelView):
         if Transaction().context.get('bank_statement_date'):
             return Transaction().context.get('bank_statement_date').date()
         return None
+
+    @fields.depends('account')
+    def on_change_with_party_required(self, name=None):
+        if self.account:
+            return self.account.party_required
+        return False
 
     @fields.depends('account', 'amount', 'party', 'invoice')
     def on_change_party(self):
