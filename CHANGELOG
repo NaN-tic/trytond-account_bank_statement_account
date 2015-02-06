@@ -1,1 +1,4 @@
+* Fix move creation in alternate currency
+* Use line date to compute second currency amount
+* Prefill account moves with company amount as it must be in company currency
 * Initial release

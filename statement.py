@@ -216,12 +216,13 @@ class StatementMoveLine(ModelSQL, ModelView):
         pool = Pool()
         MoveLine = pool.get('account.move.line')
         Currency = Pool().get('currency.currency')
-        with Transaction().set_context(date=self.line.date.date()):
-            amount = Currency.compute(self.line.journal.currency, self.amount,
-                self.line.company.currency)
+        amount = self.amount
         if self.line.journal.currency != self.line.company.currency:
             second_currency = self.line.journal.currency.id
-            amount_second_currency = abs(self.amount)
+            with Transaction().set_context(date=self.line.date.date()):
+                amount_second_currency = abs(Currency.compute(
+                        self.line.company.currency, self.amount,
+                        self.line.journal.currency))
         else:
             amount_second_currency = None
             second_currency = None
