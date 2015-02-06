@@ -31,14 +31,24 @@ Create company::
     >>> CurrencyRate = Model.get('currency.currency.rate')
     >>> currencies = Currency.find([('code', '=', 'USD')])
     >>> if not currencies:
-    ...     currency = Currency(name='US Dollar', symbol=u'$', code='USD',
+    ...     dollar = Currency(name='US Dollar', symbol=u'$', code='USD',
     ...         rounding=Decimal('0.01'), mon_grouping='[]',
     ...         mon_decimal_point='.')
-    ...     currency.save()
+    ...     dollar.save()
     ...     CurrencyRate(date=today + relativedelta(month=1, day=1),
-    ...         rate=Decimal('1.0'), currency=currency).save()
+    ...         rate=Decimal('1.25'), currency=dollar).save()
     ... else:
-    ...     currency, = currencies
+    ...     dollar, = currencies
+    >>> currencies = Currency.find([('code', '=', 'EUR')])
+    >>> if not currencies:
+    ...     euro = Currency(name='Euro', symbol=u'€', code='EUR',
+    ...         rounding=Decimal('0.01'), mon_grouping='[]',
+    ...         mon_decimal_point='.')
+    ...     euro.save()
+    ...     CurrencyRate(date=today + relativedelta(month=1, day=1),
+    ...         rate=Decimal('1.0'), currency=euro).save()
+    ... else:
+    ...     euro, = currencies
     >>> Company = Model.get('company.company')
     >>> Party = Model.get('party.party')
     >>> company_config = Wizard('company.company.config')
@@ -47,7 +57,7 @@ Create company::
     >>> party = Party(name='Dunder Mifflin')
     >>> party.save()
     >>> company.party = party
-    >>> company.currency = currency
+    >>> company.currency = euro
     >>> company_config.execute('add')
     >>> company, = Company.find([])
 
@@ -134,7 +144,7 @@ Create journals::
     >>> account_journal.save()
     >>> StatementJournal = Model.get('account.bank.statement.journal')
     >>> statement_journal = StatementJournal(name='Test',
-    ...     journal=account_journal)
+    ...     journal=account_journal, currency=dollar)
     >>> statement_journal.save()
 
 Create move::
@@ -171,7 +181,7 @@ Create bank statement lines::
     >>> statement.lines.append(statement_line)
     >>> statement_line.date = now
     >>> statement_line.description = 'Statement Line'
-    >>> statement_line.amount = Decimal('80.0')
+    >>> statement_line.amount = Decimal('80.0') * Decimal('1.25')
     >>> statement_line.account = revenue
     >>> statement.save()
     >>> statement.reload()
@@ -188,8 +198,7 @@ Create bank statement lines::
     >>> st_move_line.date = today
     >>> st_move_line.description = 'Description'
     >>> st_move_line.save()
-    >>> st_move_line.reload()
-    >>> StatementLine.post([statement_line.id], config.context)
+    >>> statement_line.click('post')
     >>> statement_line.company_amount == Decimal('80.0')
     True
     >>> st_move_line.move.description == 'Description'
