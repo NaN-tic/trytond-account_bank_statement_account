@@ -265,8 +265,8 @@ class StatementMoveLine(ModelSQL, ModelView):
         if self.account == account:
             self.raise_user_error('same_debit_credit_account', {
                     'account': self.account.rec_name,
-                    'line': self.account,
-                    'journal': self.journal,
+                    'line': self.rec_name,
+                    'journal': self.line.journal.rec_name,
                     })
 
         bank_move = MoveLine(
