@@ -129,39 +129,31 @@ class StatementMoveLine(ModelSQL, ModelView):
 
     @fields.depends('account', 'amount', 'party', 'invoice')
     def on_change_party(self):
-        res = {}
         if self.party and self.amount:
             if self.amount > Decimal("0.0"):
                 account = self.account or self.party.account_receivable
             else:
                 account = self.account or self.party.account_payable
-            res['account'] = account.id
-            res['account.rec_name'] = account.rec_name
-        return res
+            self.account = account
 
     @fields.depends('amount', 'party', 'account', 'invoice',
         '_parent_line.journal')
     def on_change_amount(self):
-        res = {}
         if self.party and not self.account and self.amount:
             if self.amount > Decimal("0.0"):
                 account = self.party.account_receivable
             else:
                 account = self.party.account_payable
-            res['account'] = account.id
-            res['account.rec_name'] = account.rec_name
-        return res
+            self.account = account
 
     @fields.depends('account', 'invoice')
     def on_change_account(self):
-        res = {}
         if self.invoice:
             if self.account:
                 if self.invoice.account != self.account:
-                    res['invoice'] = None
+                    self.invoice = None
             else:
-                res['invoice'] = None
-        return res
+                self.invoice = None
 
     def get_rec_name(self, name):
         return self.line.rec_name
