@@ -70,6 +70,10 @@ msgctxt "field:account.bank.statement.move.line,party:"
 msgid "Party"
 msgstr "Tercero"
 
+msgctxt "field:account.bank.statement.move.line,party_required:"
+msgid "Party Required"
+msgstr "Tercero requerido"
+
 msgctxt "field:account.bank.statement.move.line,rec_name:"
 msgid "Name"
 msgstr "Nombre"
