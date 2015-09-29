@@ -19,11 +19,11 @@ Create database::
 
 Install account_bank_statement::
 
-    >>> Module = Model.get('ir.module.module')
+    >>> Module = Model.get('ir.module')
     >>> account_bank_module, = Module.find(
     ...     [('name', '=', 'account_bank_statement_account')])
     >>> Module.install([account_bank_module.id], config.context)
-    >>> Wizard('ir.module.module.install_upgrade').execute('upgrade')
+    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
 
 Create company::
 
