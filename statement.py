@@ -2,7 +2,7 @@
 #copyright notices and license terms.
 
 from decimal import Decimal
-from trytond.model import ModelView, ModelSQL, fields
+from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pyson import Eval, Not, Equal
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
@@ -91,8 +91,9 @@ class StatementMoveLine(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super(StatementMoveLine, cls).__setup__()
+        t = cls.__table__()
         cls._sql_constraints += [(
-                'check_bank_move_amount', 'CHECK(amount != 0)',
+                'check_bank_move_amount', Check(t, t.amount != 0),
                 'Amount should be a positive or negative value.'),
         ]
         cls._error_messages.update({
