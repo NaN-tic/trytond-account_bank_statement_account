@@ -60,6 +60,7 @@ Create fiscal year::
 
     >>> FiscalYear = Model.get('account.fiscalyear')
     >>> Sequence = Model.get('ir.sequence')
+    >>> SequenceStrict = Model.get('ir.sequence.strict')
     >>> fiscalyear = FiscalYear(name=str(today.year))
     >>> fiscalyear.start_date = today + relativedelta(month=1, day=1)
     >>> fiscalyear.end_date = today + relativedelta(month=12, day=31)
@@ -68,6 +69,13 @@ Create fiscal year::
     ...     company=company)
     >>> post_move_seq.save()
     >>> fiscalyear.post_move_sequence = post_move_seq
+    >>> invoice_seq = SequenceStrict(name=str(today.year),
+    ...     code='account.invoice', company=company)
+    >>> invoice_seq.save()
+    >>> fiscalyear.out_invoice_sequence = invoice_seq
+    >>> fiscalyear.in_invoice_sequence = invoice_seq
+    >>> fiscalyear.out_credit_note_sequence = invoice_seq
+    >>> fiscalyear.in_credit_note_sequence = invoice_seq
     >>> fiscalyear.save()
     >>> FiscalYear.create_period([fiscalyear.id], config.context)
 
@@ -119,6 +127,10 @@ Create party::
     >>> Party = Model.get('party.party')
     >>> party = Party(name='Party')
     >>> party.save()
+    >>> supplier = Party(name='Supplier')
+    >>> supplier.save()
+    >>> customer = Party(name='Customer')
+    >>> customer.save()
 
 Create journals::
 
@@ -197,3 +209,139 @@ Create bank statement lines::
     >>> set([x.description for x in st_move_line.move.lines]) == set(
     ...         ['Description'])
     True
+
+Create payment term::
+
+    >>> PaymentTerm = Model.get('account.invoice.payment_term')
+    >>> PaymentTermLine = Model.get('account.invoice.payment_term.line')
+    >>> payment_term = PaymentTerm(name='Direct')
+    >>> payment_term_line = PaymentTermLine(type='remainder', days=0)
+    >>> payment_term.lines.append(payment_term_line)
+    >>> payment_term.save()
+
+Create 2 customer invoices::
+
+    >>> Invoice = Model.get('account.invoice')
+    >>> InvoiceLine = Model.get('account.invoice.line')
+    >>> customer_invoice1 = Invoice(type='out_invoice')
+    >>> customer_invoice1.party = customer
+    >>> customer_invoice1.payment_term = payment_term
+    >>> invoice_line = InvoiceLine()
+    >>> customer_invoice1.lines.append(invoice_line)
+    >>> invoice_line.quantity = 1
+    >>> invoice_line.unit_price = Decimal('100')
+    >>> invoice_line.account = revenue
+    >>> invoice_line.description = 'Test'
+    >>> customer_invoice1.save()
+    >>> Invoice.post([customer_invoice1.id], config.context)
+    >>> customer_invoice1.state
+    u'posted'
+
+Create 1 customer credit note::
+
+    >>> customer_credit_note = Invoice(type='out_credit_note')
+    >>> customer_credit_note.party = customer
+    >>> customer_credit_note.payment_term = payment_term
+    >>> invoice_line = InvoiceLine()
+    >>> customer_credit_note.lines.append(invoice_line)
+    >>> invoice_line.quantity = 1
+    >>> invoice_line.unit_price = Decimal('50')
+    >>> invoice_line.account = revenue
+    >>> invoice_line.description = 'Test'
+    >>> customer_credit_note.save()
+    >>> Invoice.post([customer_credit_note.id], config.context)
+    >>> customer_credit_note.state
+    u'posted'
+
+
+Create 1 supplier invoices::
+
+    >>> supplier_invoice = Invoice(type='in_invoice')
+    >>> supplier_invoice.party = supplier
+    >>> supplier_invoice.payment_term = payment_term
+    >>> invoice_line = InvoiceLine()
+    >>> supplier_invoice.lines.append(invoice_line)
+    >>> invoice_line.quantity = 1
+    >>> invoice_line.unit_price = Decimal('50')
+    >>> invoice_line.account = expense
+    >>> invoice_line.description = 'Test'
+    >>> supplier_invoice.invoice_date = today
+    >>> supplier_invoice.save()
+    >>> Invoice.post([supplier_invoice.id], config.context)
+    >>> supplier_invoice.state
+    u'posted'
+
+Create bank statement::
+
+    >>> statement = BankStatement(journal=statement_journal, date=now)
+    >>> statement_line = statement.lines.new()
+    >>> statement_line.date = now
+    >>> statement_line.description = 'Invoice'
+    >>> statement_line.amount = Decimal('80.00')
+    >>> statement_line = statement.lines.new()
+    >>> statement_line.date = now
+    >>> statement_line.description = 'Credit Note'
+    >>> statement_line.amount = Decimal('-50.00')
+    >>> statement_line = statement.lines.new()
+    >>> statement_line.date = now
+    >>> statement_line.description = 'Supplier'
+    >>> statement_line.amount = Decimal('-50.00')
+    >>> statement.click('confirm')
+    >>> statement.state
+    u'confirmed'
+    >>> customer_line, credit_note_line, supplier_line = statement.lines
+
+Received 80 from customer::
+
+    >>> move_line = customer_line.lines.new()
+    >>> move_line.amount
+    Decimal('80.00')
+    >>> move_line.invoice = customer_invoice1
+    >>> move_line.party == customer
+    True
+    >>> move_line.account == receivable
+    True
+    >>> customer_line.save()
+
+Paid 50 to customer::
+
+    >>> move_line = credit_note_line.lines.new()
+    >>> move_line.amount
+    Decimal('-50.00')
+    >>> move_line.invoice = supplier_invoice
+    >>> move_line.party == supplier
+    True
+    >>> move_line.account == payable
+    True
+    >>> credit_note_line.save()
+
+Paid 50 to supplier::
+
+    >>> move_line = supplier_line.lines.new()
+    >>> move_line.amount
+    Decimal('-50.00')
+    >>> move_line.invoice = customer_credit_note
+    >>> move_line.party == customer
+    True
+    >>> move_line.account == receivable
+    True
+    >>> supplier_line.save()
+
+Confirm the statement and post its lines::
+
+    >>> for line in statement.lines:
+    ...     line.click('post')
+
+Test invoice state::
+
+    >>> customer_invoice1.reload()
+    >>> customer_invoice1.state
+    u'posted'
+    >>> customer_invoice1.amount_to_pay
+    Decimal('20.00')
+    >>> customer_credit_note.reload()
+    >>> customer_credit_note.state
+    u'paid'
+    >>> supplier_invoice.reload()
+    >>> supplier_invoice.state
+    u'paid'

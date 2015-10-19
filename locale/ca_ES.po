@@ -11,6 +11,10 @@ msgstr ""
 "que el configurat com haver o deure en el diari \"%(journal)s\"."
 
 msgctxt "error:account.bank.statement.move.line:"
+msgid "Amount \"%s\" is greater than the amount to pay of invoice."
+msgstr "L'import \"%s\" es més gran que l'import a pagar de la factura."
+
+msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "L'import hauria de ser un valor positiu o negatiu."
 
@@ -58,6 +62,10 @@ msgctxt "field:account.bank.statement.move.line,id:"
 msgid "ID"
 msgstr "ID"
 
+msgctxt "field:account.bank.statement.move.line,invoice:"
+msgid "Invoice"
+msgstr "Factura"
+
 msgctxt "field:account.bank.statement.move.line,line:"
 msgid "Line"
 msgstr "Línia"
@@ -69,6 +77,10 @@ msgstr "Assentament"
 msgctxt "field:account.bank.statement.move.line,party:"
 msgid "Party"
 msgstr "Tercer"
+
+msgctxt "field:account.bank.statement.move.line,party_required:"
+msgid "Party Required"
+msgstr "Tercer requerit"
 
 msgctxt "field:account.bank.statement.move.line,rec_name:"
 msgid "Name"

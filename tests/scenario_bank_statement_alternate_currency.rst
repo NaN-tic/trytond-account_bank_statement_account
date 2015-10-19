@@ -66,18 +66,30 @@ Reload the context::
     >>> User = Model.get('res.user')
     >>> config._context = User.get_preferences(True, config.context)
 
+    ...     code='account.invoice', company=company)
+
 Create fiscal year::
 
     >>> FiscalYear = Model.get('account.fiscalyear')
     >>> Sequence = Model.get('ir.sequence')
-    >>> fiscalyear = FiscalYear(name=str(today.year))
+    >>> SequenceStrict = Model.get('ir.sequence.strict')
+    >>> fiscalyear = FiscalYear(name='%s' % today.year)
     >>> fiscalyear.start_date = today + relativedelta(month=1, day=1)
     >>> fiscalyear.end_date = today + relativedelta(month=12, day=31)
     >>> fiscalyear.company = company
-    >>> post_move_seq = Sequence(name=str(today.year), code='account.move',
+    >>> post_move_sequence = Sequence(name='%s' % today.year,
+    ...     code='account.move',
     ...     company=company)
-    >>> post_move_seq.save()
-    >>> fiscalyear.post_move_sequence = post_move_seq
+    >>> post_move_sequence.save()
+    >>> fiscalyear.post_move_sequence = post_move_sequence
+    >>> invoice_sequence = SequenceStrict(name='%s' % today.year,
+    ...     code='account.invoice',
+    ...     company=company)
+    >>> invoice_sequence.save()
+    >>> fiscalyear.out_invoice_sequence = invoice_sequence
+    >>> fiscalyear.in_invoice_sequence = invoice_sequence
+    >>> fiscalyear.out_credit_note_sequence = invoice_sequence
+    >>> fiscalyear.in_credit_note_sequence = invoice_sequence
     >>> fiscalyear.save()
     >>> FiscalYear.create_period([fiscalyear.id], config.context)
 
