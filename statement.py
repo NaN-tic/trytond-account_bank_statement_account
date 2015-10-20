@@ -3,7 +3,7 @@
 
 from decimal import Decimal
 from trytond.model import ModelView, ModelSQL, fields, Check
-from trytond.pyson import Eval, Not, Equal
+from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 
@@ -22,9 +22,9 @@ class StatementLine:
     lines = fields.One2Many('account.bank.statement.move.line',
         'line', 'Transactions', states=POSTED_STATES,
         context={
-            'bank_statement_amount': Eval('company_amount'),
-            'bank_statement_date': Eval('date'),
-            'bank_statement_moves_amount': Eval('moves_amount'),
+            'bank_statement_amount': Eval('company_amount', 0),
+            'bank_statement_date': Eval('date', None),
+            'bank_statement_moves_amount': Eval('moves_amount', 0),
             })
 
     @classmethod
@@ -40,10 +40,10 @@ class StatementLine:
                 line.create_move()
         super(StatementLine, cls).post(statement_lines)
 
-    @fields.depends('currency_digits')
+    @fields.depends('state', 'lines')
     def on_change_with_moves_amount(self):
         res = super(StatementLine, self).on_change_with_moves_amount()
-        if getattr(self, 'state', None) == 'posted':
+        if self.state == 'posted':
             return res
         return res + sum(l.amount or Decimal('0.0') for l in self.lines)
 
@@ -87,6 +87,15 @@ class StatementMoveLine(ModelSQL, ModelView):
             ])
     description = fields.Char('Description')
     move = fields.Many2One('account.move', 'Account Move', readonly=True)
+    invoice = fields.Many2One('account.invoice', 'Invoice',
+        domain=[
+            If(Bool(Eval('party')), [('party', '=', Eval('party'))], []),
+            If(Bool(Eval('party')), [('account', '=', Eval('account'))], []),
+            If(Eval('_parent_line', {}).get('state') != 'posted',
+                ('state', '=', 'posted'),
+                ('state', '!=', '')),
+            ],
+        depends=['party', 'account'])
 
     @classmethod
     def __setup__(cls):
@@ -105,6 +114,8 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'same_debit_credit_account': ('Account "%(account)s" in '
                     'statement line "%(line)s" is the same as the one '
                     'configured as credit or debit on journal "%(journal)s".'),
+                'amount_greater_invoice_amount_to_pay': ('Amount "%s" is '
+                    'greater than the amount to pay of invoice.'),
                 })
 
     @staticmethod
@@ -112,8 +123,8 @@ class StatementMoveLine(ModelSQL, ModelView):
         context = Transaction().context
         if ('bank_statement_amount' in context and
                 'bank_statement_moves_amount' in context):
-            return (context['bank_statement_amount']
-                - context['bank_statement_moves_amount'])
+            return (Decimal(context['bank_statement_amount'])
+                - Decimal(context['bank_statement_moves_amount']))
         return Decimal(0)
 
     @staticmethod
@@ -136,16 +147,34 @@ class StatementMoveLine(ModelSQL, ModelView):
             else:
                 account = self.account or self.party.account_payable
             self.account = account
+        if self.invoice:
+            if self.party:
+                if self.invoice.party != self.party:
+                    self.invoice = None
+            else:
+                self.invoice = None
 
     @fields.depends('amount', 'party', 'account', 'invoice',
         '_parent_line.journal')
     def on_change_amount(self):
+        Currency = Pool().get('currency.currency')
         if self.party and not self.account and self.amount:
             if self.amount > Decimal("0.0"):
                 account = self.party.account_receivable
             else:
                 account = self.party.account_payable
             self.account = account
+        if self.invoice:
+            if self.amount and self.line and self.line.journal:
+                invoice = self.invoice
+                journal = self.line.journal
+                with Transaction().set_context(date=invoice.currency_date):
+                    amount_to_pay = Currency.compute(invoice.currency,
+                        invoice.amount_to_pay, journal.currency)
+                if abs(self.amount) > amount_to_pay:
+                    self.invoice = None
+            else:
+                self.invoice = None
 
     @fields.depends('account', 'invoice')
     def on_change_account(self):
@@ -155,6 +184,14 @@ class StatementMoveLine(ModelSQL, ModelView):
                     self.invoice = None
             else:
                 self.invoice = None
+
+    @fields.depends('party', 'account', 'invoice')
+    def on_change_invoice(self):
+        if self.invoice:
+            if not self.party:
+                self.party = self.invoice.party
+            if not self.account:
+                self.account = self.invoice.account
 
     def get_rec_name(self, name):
         return self.line.rec_name
@@ -175,6 +212,10 @@ class StatementMoveLine(ModelSQL, ModelView):
         pool = Pool()
         Move = pool.get('account.move')
         Period = pool.get('account.period')
+        Currency = pool.get('currency.currency')
+        Lang = pool.get('ir.lang')
+        Invoice = pool.get('account.invoice')
+        MoveLine = pool.get('account.move.line')
 
         if self.move:
             return
@@ -202,6 +243,37 @@ class StatementMoveLine(ModelSQL, ModelView):
 
         self.move = move
         self.save()
+        if self.invoice:
+            with Transaction().set_context(date=self.invoice.currency_date):
+                amount_to_pay = Currency.compute(self.invoice.currency,
+                    self.invoice.amount_to_pay,
+                    self.line.company_currency)
+            if abs(amount_to_pay) < abs(self.amount):
+                lang, = Lang.search([
+                        ('code', '=', Transaction().language),
+                        ])
+
+                amount = Lang.format(lang,
+                    '%.' + str(self.line.company_currency.digits) + 'f',
+                    self.amount, True)
+                self.raise_user_error('amount_greater_invoice_amount_to_pay',
+                        error_args=(amount,))
+
+            with Transaction().set_context(date=self.invoice.currency_date):
+                amount = Currency.compute(self.line.journal.currency,
+                    self.amount, self.line.company_currency)
+
+            reconcile_lines = self.invoice.get_reconcile_lines_for_amount(
+                amount)
+            for move_line in move.lines:
+                if move_line.account == self.invoice.account:
+                    Invoice.write([self.invoice], {
+                            'payment_lines': [('add', [move_line.id])],
+                            })
+                    break
+            if reconcile_lines[1] == Decimal('0.0'):
+                lines = reconcile_lines[0] + [move_line]
+                MoveLine.reconcile(lines)
         return move
 
     @classmethod

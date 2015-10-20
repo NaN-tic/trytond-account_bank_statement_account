@@ -8,11 +8,12 @@
     <field name="amount"/>
     <label name="party"/>
     <field name="party"/>
+    <label name="invoice"/>
+    <field name="invoice"/>
     <label name="account"/>
     <field name="account"/>
     <label name="line"/>
     <field name="line"/>
-    <newline/>
     <label name="description"/>
     <field name="description" colspan="3"/>
     <label name="move"/>
