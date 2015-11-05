@@ -59,7 +59,14 @@ class StatementLine:
     def reset_account_move(self):
         pool = Pool()
         Move = pool.get('account.move')
+        Reconciliation = pool.get('account.move.reconciliation')
+
+        Reconciliation = pool.get('account.move.reconciliation')
         delete_moves = [x.move for x in self.lines if x.move]
+        reconciliations = [x.reconciliation for m in delete_moves
+            for x in m.lines if x.reconciliation]
+        if reconciliations:
+            Reconciliation.delete(reconciliations)
         Move.draft(delete_moves)
         Move.delete(delete_moves)
 
