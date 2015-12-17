@@ -307,6 +307,8 @@ class StatementMoveLine(ModelSQL, ModelView):
                 amount_second_currency = abs(Currency.compute(
                         self.line.company.currency, self.amount,
                         self.line.journal.currency))
+                if amount >= _ZERO:
+                    amount_second_currency = -amount_second_currency
         else:
             amount_second_currency = None
             second_currency = None
@@ -341,6 +343,8 @@ class StatementMoveLine(ModelSQL, ModelView):
                     'journal': self.line.journal.rec_name,
                     })
 
+        if amount_second_currency:
+            amount_second_currency = -amount_second_currency
         bank_move = MoveLine(
             description=self.description,
             debit=amount >= _ZERO and amount or _ZERO,
