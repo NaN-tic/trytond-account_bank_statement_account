@@ -42,10 +42,13 @@ class StatementLine:
 
     @fields.depends('state', 'lines')
     def on_change_with_moves_amount(self):
-        res = super(StatementLine, self).on_change_with_moves_amount()
+        amount = super(StatementLine, self).on_change_with_moves_amount()
         if self.state == 'posted':
-            return res
-        return res + sum(l.amount or Decimal('0.0') for l in self.lines)
+            return amount
+        amount += sum(l.amount or Decimal('0.0') for l in self.lines)
+        if self.company_currency:
+            amount = self.company_currency.round(amount)
+        return amount
 
     @classmethod
     def cancel(cls, statement_lines):
