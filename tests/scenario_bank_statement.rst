@@ -9,6 +9,9 @@ Imports::
     >>> from decimal import Decimal
     >>> from operator import attrgetter
     >>> from proteus import config, Model, Wizard
+    >>> from trytond.modules.currency.tests.tools import get_currency
+    >>> from trytond.modules.company.tests.tools import create_company, \
+    ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
     ...     create_chart, get_accounts, create_tax, set_tax_code
     >>> from.trytond.modules.account_invoice.tests.tools import \
@@ -31,29 +34,9 @@ Install account_bank_statement::
 
 Create company::
 
-    >>> Currency = Model.get('currency.currency')
-    >>> CurrencyRate = Model.get('currency.currency.rate')
-    >>> currencies = Currency.find([('code', '=', 'USD')])
-    >>> if not currencies:
-    ...     currency = Currency(name='US Dollar', symbol=u'$', code='USD',
-    ...         rounding=Decimal('0.01'), mon_grouping='[]',
-    ...         mon_decimal_point='.')
-    ...     currency.save()
-    ...     CurrencyRate(date=today + relativedelta(month=1, day=1),
-    ...         rate=Decimal('1.0'), currency=currency).save()
-    ... else:
-    ...     currency, = currencies
-    >>> Company = Model.get('company.company')
-    >>> Party = Model.get('party.party')
-    >>> company_config = Wizard('company.company.config')
-    >>> company_config.execute('company')
-    >>> company = company_config.form
-    >>> party = Party(name='Dunder Mifflin')
-    >>> party.save()
-    >>> company.party = party
-    >>> company.currency = currency
-    >>> company_config.execute('add')
-    >>> company, = Company.find([])
+    >>> currency = get_currency('EUR')
+    >>> _ = create_company(currency=currency)
+    >>> company = get_company()
 
 Reload the context::
 
@@ -123,10 +106,7 @@ Create move::
     >>> line2.account = receivable
     >>> line2.credit = Decimal('80.0')
     >>> line2.party = party
-    >>> move.save()
-    >>> move.reload()
-    >>> Move.post([move.id], config.context)
-    >>> move.reload()
+    >>> move.click('post')
     >>> move.state
     u'posted'
 
@@ -144,10 +124,7 @@ Create bank statement lines::
     >>> statement_line.description = 'Statement Line'
     >>> statement_line.amount = Decimal('80.0')
     >>> statement_line.account = revenue
-    >>> statement.save()
-    >>> statement.reload()
-    >>> BankStatement.confirm([statement.id], config.context)
-    >>> statement.reload()
+    >>> statement.click('confirm')
     >>> statement.state
     u'confirmed'
     >>> statement_line, = statement.lines
@@ -159,10 +136,9 @@ Create bank statement lines::
     >>> st_move_line.date = today
     >>> st_move_line.description = 'Description'
     >>> st_move_line.save()
-    >>> st_move_line.reload()
-    >>> StatementLine.post([statement_line.id], config.context)
-    >>> statement_line.company_amount == Decimal('80.0')
-    True
+    >>> statement_line.click('post')
+    >>> statement_line.company_amount
+    Decimal('80.00')
     >>> st_move_line.move.description == 'Description'
     True
     >>> set([x.description for x in st_move_line.move.lines]) == set(
