@@ -40,7 +40,7 @@ class StatementLine:
                 line.create_move()
         super(StatementLine, cls).post(statement_lines)
 
-    @fields.depends('state', 'lines')
+    @fields.depends('bank_lines', 'state', 'company_currency', 'lines')
     def on_change_with_moves_amount(self):
         amount = super(StatementLine, self).on_change_with_moves_amount()
         if self.state == 'posted':
