@@ -34,6 +34,7 @@ class StatementLine:
             cls.moves_amount.on_change_with.add('lines')
 
     @classmethod
+    @ModelView.button
     def post(cls, statement_lines):
         for st_line in statement_lines:
             for line in st_line.lines:
@@ -48,6 +49,7 @@ class StatementLine:
         return res + sum(l.amount or Decimal('0.0') for l in self.lines)
 
     @classmethod
+    @ModelView.button
     def cancel(cls, statement_lines):
         super(StatementLine, cls).cancel(statement_lines)
         with Transaction().set_context({
