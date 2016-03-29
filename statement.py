@@ -7,7 +7,7 @@ from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.pool import Pool, PoolMeta
 from trytond.transaction import Transaction
 
-__metaclass__ = PoolMeta
+
 __all__ = ['StatementLine', 'StatementMoveLine']
 
 POSTED_STATES = {
@@ -17,6 +17,7 @@ _ZERO = Decimal("0.0")
 
 
 class StatementLine:
+    __metaclass__ = PoolMeta
     __name__ = 'account.bank.statement.line'
 
     lines = fields.One2Many('account.bank.statement.move.line',
