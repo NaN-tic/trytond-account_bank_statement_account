@@ -21,18 +21,7 @@ class StatementLine:
     __name__ = 'account.bank.statement.line'
 
     lines = fields.One2Many('account.bank.statement.move.line',
-        'line', 'Transactions', states=POSTED_STATES,
-        context={
-            'bank_statement_amount': Eval('company_amount', 0),
-            'bank_statement_date': Eval('date', None),
-            'bank_statement_moves_amount': Eval('moves_amount', 0),
-            })
-
-    @classmethod
-    def __setup__(cls):
-        super(StatementLine, cls).__setup__()
-        if 'lines' not in cls.moves_amount.on_change_with:
-            cls.moves_amount.on_change_with.add('lines')
+        'line', 'Transactions', states=POSTED_STATES)
 
     @classmethod
     @ModelView.button
@@ -43,8 +32,8 @@ class StatementLine:
         super(StatementLine, cls).post(statement_lines)
 
     @fields.depends('bank_lines', 'state', 'company_currency', 'lines')
-    def on_change_with_moves_amount(self):
-        amount = super(StatementLine, self).on_change_with_moves_amount()
+    def on_change_with_moves_amount(self, name=None):
+        amount = super(StatementLine, self).on_change_with_moves_amount(name)
         if self.state == 'posted':
             return amount
         amount += sum(l.amount or Decimal('0.0') for l in self.lines)
@@ -131,20 +120,15 @@ class StatementMoveLine(ModelSQL, ModelView):
                     'greater than the amount to pay of invoice.'),
                 })
 
-    @staticmethod
-    def default_amount():
-        context = Transaction().context
-        if ('bank_statement_amount' in context and
-                'bank_statement_moves_amount' in context):
-            return (Decimal(context['bank_statement_amount'])
-                - Decimal(context['bank_statement_moves_amount']))
-        return Decimal(0)
+    @fields.depends('line')
+    def on_change_with_date(self):
+        if self.line and self.line.date:
+            return self.line.date.date()
 
-    @staticmethod
-    def default_date():
-        if Transaction().context.get('bank_statement_date'):
-            return Transaction().context.get('bank_statement_date').date()
-        return None
+    @fields.depends('line')
+    def on_change_with_amount(self):
+        if self.line:
+            return self.line.company_amount - self.line.moves_amount
 
     @fields.depends('account')
     def on_change_with_party_required(self, name=None):
