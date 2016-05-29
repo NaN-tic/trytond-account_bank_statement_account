@@ -11,6 +11,10 @@ msgstr ""
 "que el configurat com haver o deure en el diari \"%(journal)s\"."
 
 msgctxt "error:account.bank.statement.move.line:"
+msgid "Amount \"%s\" is greater than the amount to pay of invoice."
+msgstr "L'import \"%s\" és més gran que l'import a pagar de la factura."
+
+msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "L'import hauria de ser un valor positiu o negatiu."
 
@@ -25,6 +29,14 @@ msgid ""
 msgstr ""
 "El compte d'haver o deure del diari \"%s\" no està marcat com a "
 "\"Conciliació bancària\"."
+
+msgctxt "error:account.invoice:"
+msgid ""
+"Invoice \"%(invoice)s\" cannot be moved to \"Draft\" state because it is "
+"already used in statement line \"%(statement_line)s\"."
+msgstr ""
+"La factura \"%(invoice)s\" no es pot passar a estat \"Esborrany\" perquè "
+"s'està utilitzant en la línia d'extracte bancari \"%(statement_line)s\"."
 
 msgctxt "field:account.bank.statement.line,lines:"
 msgid "Transactions"
@@ -57,6 +69,10 @@ msgstr "Descripció"
 msgctxt "field:account.bank.statement.move.line,id:"
 msgid "ID"
 msgstr "ID"
+
+msgctxt "field:account.bank.statement.move.line,invoice:"
+msgid "Invoice"
+msgstr "Factura"
 
 msgctxt "field:account.bank.statement.move.line,line:"
 msgid "Line"

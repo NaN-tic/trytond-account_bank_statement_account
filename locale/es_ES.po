@@ -11,6 +11,10 @@ msgstr ""
 "que la configurada como haber o debe en el diario\"%(journal)s\"."
 
 msgctxt "error:account.bank.statement.move.line:"
+msgid "Amount \"%s\" is greater than the amount to pay of invoice."
+msgstr "El importe \"%s\" es mayor que el importe a pagar de la factura."
+
+msgctxt "error:account.bank.statement.move.line:"
 msgid "Amount should be a positive or negative value."
 msgstr "El importe debería ser un valor positivo o negativo."
 
@@ -25,6 +29,14 @@ msgid ""
 msgstr ""
 "La cuenta haber o debe del diario \"%s\" no está marcada como \"Conciliación"
 " bancaria\"."
+
+msgctxt "error:account.invoice:"
+msgid ""
+"Invoice \"%(invoice)s\" cannot be moved to \"Draft\" state because it is "
+"already used in statement line \"%(statement_line)s\"."
+msgstr ""
+"La factura \"%(invoice)s\" no se puede pasar a estado \"Borrador\" porqué se"
+" está utilitzando en la línea de extracto bancario \"%(statement_line)s\"."
 
 msgctxt "field:account.bank.statement.line,lines:"
 msgid "Transactions"
@@ -57,6 +69,10 @@ msgstr "Descripción"
 msgctxt "field:account.bank.statement.move.line,id:"
 msgid "ID"
 msgstr "ID"
+
+msgctxt "field:account.bank.statement.move.line,invoice:"
+msgid "Invoice"
+msgstr "Factura"
 
 msgctxt "field:account.bank.statement.move.line,line:"
 msgid "Line"
