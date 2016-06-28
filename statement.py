@@ -1,10 +1,10 @@
-#The COPYRIGHT file at the top level of this repository contains the full
-#copyright notices and license terms.
-
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from decimal import Decimal
+
 from trytond.model import ModelView, ModelSQL, fields, Check
-from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.pool import Pool, PoolMeta
+from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
@@ -272,16 +272,6 @@ class StatementMoveLine(ModelSQL, ModelView):
                 lines = reconcile_lines[0] + [move_line]
                 MoveLine.reconcile(lines)
         return move
-
-    @classmethod
-    def post_move(cls, lines):
-        Move = Pool().get('account.move')
-        Move.post([l.move for l in lines if l.move])
-
-    @classmethod
-    def delete_move(cls, lines):
-        Move = Pool().get('account.move')
-        Move.delete([l.move for l in lines if l.move])
 
     def _get_move_lines(self):
         '''
