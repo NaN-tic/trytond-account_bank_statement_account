@@ -2,6 +2,9 @@
 <!--The COPYRIGHT file at the top level of this repository contains the full
      copyright notices and license terms. -->
 <form string="Statement Line Move Line">
+    <label name="line"/>
+    <field name="line"/>
+    <newline/>
     <label name="date"/>
     <field name="date"/>
     <label name="amount"/>
@@ -12,8 +15,7 @@
     <field name="invoice"/>
     <label name="account"/>
     <field name="account"/>
-    <label name="line"/>
-    <field name="line"/>
+    <newline/>
     <label name="description"/>
     <field name="description" colspan="3"/>
     <label name="move"/>
