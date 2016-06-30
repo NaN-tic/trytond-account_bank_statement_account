@@ -210,7 +210,6 @@ class StatementMoveLine(ModelSQL, ModelView):
         pool = Pool()
         Move = pool.get('account.move')
         Currency = pool.get('currency.currency')
-        Lang = pool.get('ir.lang')
         Invoice = pool.get('account.invoice')
         MoveLine = pool.get('account.move.line')
 
@@ -232,20 +231,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         self.move = move
         self.save()
         if self.invoice:
-            with Transaction().set_context(date=self.invoice.currency_date):
-                amount_to_pay = Currency.compute(self.invoice.currency,
-                    self.invoice.amount_to_pay,
-                    self.line.company_currency)
-            if abs(amount_to_pay) < abs(self.amount):
-                lang, = Lang.search([
-                        ('code', '=', Transaction().language),
-                        ])
-
-                amount = Lang.format(lang,
-                    '%.' + str(self.line.company_currency.digits) + 'f',
-                    self.amount, True)
-                self.raise_user_error('amount_greater_invoice_amount_to_pay',
-                        error_args=(amount,))
+            self._check_invoice_amount_to_pay()
 
             with Transaction().set_context(date=self.invoice.currency_date):
                 amount = Currency.compute(self.line.journal.currency,
@@ -263,6 +249,28 @@ class StatementMoveLine(ModelSQL, ModelView):
                 lines = reconcile_lines[0] + [move_line]
                 MoveLine.reconcile(lines)
         return move
+
+    def _check_invoice_amount_to_pay(self):
+        pool = Pool()
+        Currency = pool.get('currency.currency')
+        Lang = pool.get('ir.lang')
+
+        if not self.invoice:
+            return
+        with Transaction().set_context(date=self.invoice.currency_date):
+            amount_to_pay = Currency.compute(self.invoice.currency,
+                self.invoice.amount_to_pay,
+                self.line.company_currency)
+        if abs(amount_to_pay) < abs(self.amount):
+            lang, = Lang.search([
+                    ('code', '=', Transaction().language),
+                    ])
+
+            amount = Lang.format(lang,
+                '%.' + str(self.line.company_currency.digits) + 'f',
+                self.amount, True)
+            self.raise_user_error('amount_greater_invoice_amount_to_pay',
+                    error_args=(amount,))
 
     def _get_move(self):
         pool = Pool()
