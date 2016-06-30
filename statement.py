@@ -209,7 +209,6 @@ class StatementMoveLine(ModelSQL, ModelView):
         '''
         pool = Pool()
         Move = pool.get('account.move')
-        Period = pool.get('account.period')
         Currency = pool.get('currency.currency')
         Lang = pool.get('ir.lang')
         Invoice = pool.get('account.invoice')
@@ -218,16 +217,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         if self.move:
             return
 
-        period_id = Period.find(self.line.company.id, date=self.date)
-
-        move_lines = self._get_move_lines()
-        move = Move(
-            period=period_id,
-            journal=self.line.journal.journal,
-            date=self.date,
-            lines=move_lines,
-            description=self.description,
-            )
+        move = self._get_move()
         move.save()
         Move.post([move])
 
@@ -273,6 +263,22 @@ class StatementMoveLine(ModelSQL, ModelView):
                 lines = reconcile_lines[0] + [move_line]
                 MoveLine.reconcile(lines)
         return move
+
+    def _get_move(self):
+        pool = Pool()
+        Move = pool.get('account.move')
+        Period = pool.get('account.period')
+
+        period_id = Period.find(self.line.company.id, date=self.date)
+
+        move_lines = self._get_move_lines()
+        return Move(
+            period=period_id,
+            journal=self.line.journal.journal,
+            date=self.date,
+            lines=move_lines,
+            description=self.description,
+            )
 
     def _get_move_lines(self):
         '''
