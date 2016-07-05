@@ -1,10 +1,10 @@
-#The COPYRIGHT file at the top level of this repository contains the full
-#copyright notices and license terms.
-
+# The COPYRIGHT file at the top level of this repository contains the full
+# copyright notices and license terms.
 from decimal import Decimal
+
 from trytond.model import ModelView, ModelSQL, fields
-from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.pool import Pool, PoolMeta
+from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.transaction import Transaction
 
 __metaclass__ = PoolMeta
@@ -99,7 +99,7 @@ class StatementMoveLine(ModelSQL, ModelView):
     invoice = fields.Many2One('account.invoice', 'Invoice',
         domain=[
             If(Bool(Eval('party')), [('party', '=', Eval('party'))], []),
-            If(Bool(Eval('party')), [('account', '=', Eval('account'))], []),
+            If(Bool(Eval('account')), [('account', '=', Eval('account'))], []),
             If(Eval('_parent_line', {}).get('state') != 'posted',
                 ('state', '=', 'posted'),
                 ('state', '!=', '')),
@@ -232,25 +232,14 @@ class StatementMoveLine(ModelSQL, ModelView):
         '''
         pool = Pool()
         Move = pool.get('account.move')
-        Period = pool.get('account.period')
         Currency = pool.get('currency.currency')
-        Lang = pool.get('ir.lang')
         Invoice = pool.get('account.invoice')
         MoveLine = pool.get('account.move.line')
 
         if self.move:
             return
 
-        period_id = Period.find(self.line.company.id, date=self.date)
-
-        move_lines = self._get_move_lines()
-        move = Move(
-            period=period_id,
-            journal=self.line.journal.journal,
-            date=self.date,
-            lines=move_lines,
-            description=self.description,
-            )
+        move = self._get_move()
         move.save()
         Move.post([move])
 
@@ -265,20 +254,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         self.move = move
         self.save()
         if self.invoice:
-            with Transaction().set_context(date=self.invoice.currency_date):
-                amount_to_pay = Currency.compute(self.invoice.currency,
-                    self.invoice.amount_to_pay,
-                    self.line.company_currency)
-            if abs(amount_to_pay) < abs(self.amount):
-                lang, = Lang.search([
-                        ('code', '=', Transaction().language),
-                        ])
-
-                amount = Lang.format(lang,
-                    '%.' + str(self.line.company_currency.digits) + 'f',
-                    self.amount, True)
-                self.raise_user_error('amount_greater_invoice_amount_to_pay',
-                        error_args=(amount,))
+            self._check_invoice_amount_to_pay()
 
             with Transaction().set_context(date=self.invoice.currency_date):
                 amount = Currency.compute(self.line.journal.currency,
@@ -298,15 +274,43 @@ class StatementMoveLine(ModelSQL, ModelView):
                 MoveLine.reconcile(lines)
         return move
 
-    @classmethod
-    def post_move(cls, lines):
-        Move = Pool().get('account.move')
-        Move.post([l.move for l in lines if l.move])
+    def _check_invoice_amount_to_pay(self):
+        pool = Pool()
+        Currency = pool.get('currency.currency')
+        Lang = pool.get('ir.lang')
 
-    @classmethod
-    def delete_move(cls, lines):
-        Move = Pool().get('account.move')
-        Move.delete([l.move for l in lines if l.move])
+        if not self.invoice:
+            return
+        with Transaction().set_context(date=self.invoice.currency_date):
+            amount_to_pay = Currency.compute(self.invoice.currency,
+                self.invoice.amount_to_pay,
+                self.line.company_currency)
+        if abs(amount_to_pay) < abs(self.amount):
+            lang, = Lang.search([
+                    ('code', '=', Transaction().language),
+                    ])
+
+            amount = Lang.format(lang,
+                '%.' + str(self.line.company_currency.digits) + 'f',
+                self.amount, True)
+            self.raise_user_error('amount_greater_invoice_amount_to_pay',
+                    error_args=(amount,))
+
+    def _get_move(self):
+        pool = Pool()
+        Move = pool.get('account.move')
+        Period = pool.get('account.period')
+
+        period_id = Period.find(self.line.company.id, date=self.date)
+
+        move_lines = self._get_move_lines()
+        return Move(
+            period=period_id,
+            journal=self.line.journal.journal,
+            date=self.date,
+            lines=move_lines,
+            description=self.description,
+            )
 
     def _get_move_lines(self):
         '''
@@ -332,7 +336,7 @@ class StatementMoveLine(ModelSQL, ModelView):
                 debit=amount < _ZERO and -amount or _ZERO,
                 credit=amount >= _ZERO and amount or _ZERO,
                 account=self.account,
-                party=self.party,
+                party=self.party if self.account.party_required else None,
                 second_currency=second_currency,
                 amount_second_currency=amount_second_currency,
                 ))
