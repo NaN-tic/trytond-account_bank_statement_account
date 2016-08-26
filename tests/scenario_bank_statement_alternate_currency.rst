@@ -8,7 +8,8 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from operator import attrgetter
-    >>> from proteus import config, Model, Wizard
+    >>> from proteus import Model, Wizard
+    >>> from trytond.tests.tools import install_modules
     >>> from trytond.modules.currency.tests.tools import get_currency
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
@@ -19,18 +20,9 @@ Imports::
     >>> today = datetime.date.today()
     >>> now = datetime.datetime.now()
 
-Create database::
+Install account_bank_statment_account Module::
 
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
-Install account_bank_statement::
-
-    >>> Module = Model.get('ir.module')
-    >>> account_bank_module, = Module.find(
-    ...     [('name', '=', 'account_bank_statement_account')])
-    >>> Module.install([account_bank_module.id], config.context)
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = install_modules('account_bank_statement_account')
 
 Create company::
 
@@ -38,11 +30,6 @@ Create company::
     >>> eur = get_currency('EUR')
     >>> _ = create_company(currency=eur)
     >>> company = get_company()
-
-Reload the context::
-
-    >>> User = Model.get('res.user')
-    >>> config._context = User.get_preferences(True, config.context)
 
 Create fiscal year::
 
