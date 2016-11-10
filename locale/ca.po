@@ -56,7 +56,7 @@ msgstr "Data creació"
 
 msgctxt "field:account.bank.statement.move.line,create_uid:"
 msgid "Create User"
-msgstr "Usuari de creació"
+msgstr "Usuari creació"
 
 msgctxt "field:account.bank.statement.move.line,date:"
 msgid "Date"
@@ -100,7 +100,7 @@ msgstr "Data modificació"
 
 msgctxt "field:account.bank.statement.move.line,write_uid:"
 msgid "Write User"
-msgstr "Usuari de modificació"
+msgstr "Usuari modificació"
 
 msgctxt "model:account.bank.statement.move.line,name:"
 msgid "Statement Move Line"
