@@ -52,7 +52,7 @@ msgstr "Import"
 
 msgctxt "field:account.bank.statement.move.line,create_date:"
 msgid "Create Date"
-msgstr "Data de creació"
+msgstr "Data creació"
 
 msgctxt "field:account.bank.statement.move.line,create_uid:"
 msgid "Create User"
@@ -68,7 +68,7 @@ msgstr "Descripció"
 
 msgctxt "field:account.bank.statement.move.line,id:"
 msgid "ID"
-msgstr "Identificador"
+msgstr "ID"
 
 msgctxt "field:account.bank.statement.move.line,invoice:"
 msgid "Invoice"
@@ -96,7 +96,7 @@ msgstr "Nom"
 
 msgctxt "field:account.bank.statement.move.line,write_date:"
 msgid "Write Date"
-msgstr "Data de modificació"
+msgstr "Data modificació"
 
 msgctxt "field:account.bank.statement.move.line,write_uid:"
 msgid "Write User"
