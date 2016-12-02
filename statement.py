@@ -62,8 +62,9 @@ class StatementLine:
             for x in m.lines if x.reconciliation]
         if reconciliations:
             Reconciliation.delete(reconciliations)
-        Move.draft(delete_moves)
-        Move.delete(delete_moves)
+        if delete_moves:
+            Move.draft(delete_moves)
+            Move.delete(delete_moves)
 
 
 class StatementMoveLine(ModelSQL, ModelView):
