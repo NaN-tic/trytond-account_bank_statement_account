@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 from .invoice import *
 from .statement import *
+from . import account
 
 
 def register():
@@ -11,4 +12,6 @@ def register():
         Invoice,
         StatementLine,
         StatementMoveLine,
+        account.Move,
+        account.MoveLine,
         module='account_bank_statement_account', type_='model')
