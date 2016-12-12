@@ -110,7 +110,6 @@ Create bank statement lines::
     >>> statement_line.date = now
     >>> statement_line.description = 'Statement Line'
     >>> statement_line.amount = Decimal('80.0')
-    >>> statement_line.account = revenue
     >>> statement.click('confirm')
     >>> statement.state
     u'confirmed'
@@ -123,6 +122,9 @@ Create bank statement lines::
     >>> st_move_line.date = today
     >>> st_move_line.description = 'Description'
     >>> st_move_line.save()
+    >>> revenue.reload()
+    >>> revenue.debit
+    Decimal('0.00')
     >>> statement_line.click('post')
     >>> statement_line.company_amount
     Decimal('80.00')
@@ -131,3 +133,21 @@ Create bank statement lines::
     >>> set([x.description for x in st_move_line.move.lines]) == set(
     ...         ['Description'])
     True
+    >>> revenue.reload()
+    >>> revenue.credit
+    Decimal('80.00')
+
+If we cancel the line the value are removed from the accounting::
+
+    >>> statement_line.click('cancel')
+    >>> revenue.reload()
+    >>> revenue.credit
+    Decimal('0.00')
+
+Accounting values are recreated when re-posting the line::
+
+    >>> statement_line.click('draft')
+    >>> statement_line.click('post')
+    >>> revenue.reload()
+    >>> revenue.credit
+    Decimal('80.00')
