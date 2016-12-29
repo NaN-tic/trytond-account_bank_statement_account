@@ -55,18 +55,15 @@ class StatementLine:
         pool = Pool()
         Move = pool.get('account.move')
         Reconciliation = pool.get('account.move.reconciliation')
-        BankReconciliation = pool.get('account.bank.reconciliation')
+
+        Reconciliation = pool.get('account.move.reconciliation')
         delete_moves = [x.move for x in self.lines if x.move]
         reconciliations = [x.reconciliation for m in delete_moves
             for x in m.lines if x.reconciliation]
         if reconciliations:
             Reconciliation.delete(reconciliations)
         if delete_moves:
-            bank_lines = []
-            for move in delete_moves:
-                for line in move.lines:
-                    bank_lines += [x for x in line.bank_lines]
-            BankReconciliation.delete(bank_lines)
+            Move.draft(delete_moves)
             Move.delete(delete_moves)
 
 
