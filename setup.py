@@ -14,6 +14,7 @@ except ImportError:
 
 MODULE2PREFIX = {
     'account_bank_statement': 'trytonspain',
+    'account_move_draft': 'trytonspain',
 }
 
 
