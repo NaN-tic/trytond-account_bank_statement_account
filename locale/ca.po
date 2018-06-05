@@ -1,4 +1,4 @@
-# 
+#
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
@@ -91,7 +91,7 @@ msgid "Party Required"
 msgstr "Tercer requerit"
 
 msgctxt "field:account.bank.statement.move.line,rec_name:"
-msgid "Name"
+msgid "Record Name"
 msgstr "Nom"
 
 msgctxt "field:account.bank.statement.move.line,write_date:"
