@@ -153,7 +153,7 @@ class StatementMoveLine(ModelSQL, ModelView):
                 self.invoice = None
 
     @fields.depends('amount', 'party', 'account', 'invoice',
-        '_parent_line.journal')
+        '_parent_line.journal', 'line')
     def on_change_amount(self):
         Currency = Pool().get('currency.currency')
         if self.party and not self.account and self.amount:
