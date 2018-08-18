@@ -4,9 +4,8 @@ from trytond.pool import Pool, PoolMeta
 __all__ = ['Invoice']
 
 
-class Invoice:
+class Invoice(metaclass=PoolMeta):
     __name__ = 'account.invoice'
-    __metaclass__ = PoolMeta
 
     @classmethod
     def __setup__(cls):

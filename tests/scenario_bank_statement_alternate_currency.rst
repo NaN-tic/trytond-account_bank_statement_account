@@ -96,7 +96,7 @@ Create move::
     >>> line2.party = party
     >>> move.click('post')
     >>> move.state
-    u'posted'
+    'posted'
 
 Create bank statement::
 
@@ -114,7 +114,7 @@ Create bank statement lines::
     >>> statement_line.account = revenue
     >>> statement.click('confirm')
     >>> statement.state
-    u'confirmed'
+    'confirmed'
     >>> statement_line, = statement.lines
     >>> StatementMoveLine = Model.get('account.bank.statement.move.line')
     >>> st_move_line = StatementMoveLine()

@@ -16,8 +16,7 @@ POSTED_STATES = {
 _ZERO = Decimal("0.0")
 
 
-class StatementLine:
-    __metaclass__ = PoolMeta
+class StatementLine(metaclass=PoolMeta):
     __name__ = 'account.bank.statement.line'
 
     lines = fields.One2Many('account.bank.statement.move.line',
