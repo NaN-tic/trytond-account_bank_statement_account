@@ -50,9 +50,6 @@ Create chart of accounts::
 
     >>> Journal = Model.get('account.journal')
     >>> cash_journal, = Journal.find([('type', '=', 'cash')])
-    >>> cash_journal.credit_account = cash
-    >>> cash_journal.debit_account = cash
-    >>> cash_journal.save()
 
 Create party::
 
@@ -69,13 +66,11 @@ Create journals::
     >>> AccountJournal = Model.get('account.journal')
     >>> account_journal = AccountJournal(name='Statement',
     ...     type='cash',
-    ...     credit_account=cash,
-    ...     debit_account=cash,
     ...     sequence=sequence)
     >>> account_journal.save()
     >>> StatementJournal = Model.get('account.bank.statement.journal')
     >>> statement_journal = StatementJournal(name='Test',
-    ...     journal=account_journal)
+    ...     journal=account_journal, account=cash)
     >>> statement_journal.save()
 
 Create move::

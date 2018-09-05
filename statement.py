@@ -108,14 +108,14 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'Amount should be a positive or negative value.'),
         ]
         cls._error_messages.update({
-                'debit_credit_account_not_bank_reconcile': (
-                    'The credit or debit account of Journal "%s" is not '
-                    'checked as "Bank Conciliation".'),
-                'debit_credit_account_statement_journal': ('Please provide '
+                'account_not_bank_reconcile': (
+                    'The of Bank Statement Journal "%s" is not checked as '
+                    '"Bank Conciliation".'),
+                'account_statement_journal': ('Please provide '
                     'debit and credit account on statement journal "%s".'),
-                'same_debit_credit_account': ('Account "%(account)s" in '
+                'same_account': ('Account "%(account)s" in '
                     'statement line "%(line)s" is the same as the one '
-                    'configured as credit or debit on journal "%(journal)s".'),
+                    'configured on journal "%(journal)s".'),
                 'amount_greater_invoice_amount_to_pay': ('Amount "%s" is '
                     'greater than the amount to pay of invoice.'),
                 })
@@ -219,10 +219,10 @@ class StatementMoveLine(ModelSQL, ModelView):
         move.save()
         Move.post([move])
 
-        journal = self.line.journal.journal
-        accounts = [journal.credit_account, journal.debit_account]
+        journal = self.line.journal
+        account = journal.account
 
-        st_move_line, = [x for x in move.lines if x.account in accounts]
+        st_move_line, = [x for x in move.lines if x.account == account]
         bank_line, = st_move_line.bank_lines
         bank_line.bank_statement_line = self.line
         bank_line.save()
@@ -318,20 +318,17 @@ class StatementMoveLine(ModelSQL, ModelView):
                 amount_second_currency=amount_second_currency,
                 ))
 
-        journal = self.line.journal.journal
-        if self.amount >= _ZERO:
-            account = journal.credit_account
-        else:
-            account = journal.debit_account
+        journal = self.line.journal
+        account = journal.account
 
         if not account:
-            self.raise_user_error('debit_credit_account_statement_journal',
+            self.raise_user_error('account_statement_journal',
                 journal.rec_name)
         if not account.bank_reconcile:
-            self.raise_user_error('debit_credit_account_not_bank_reconcile',
+            self.raise_user_error('account_not_bank_reconcile',
                 journal.rec_name)
         if self.account == account:
-            self.raise_user_error('same_debit_credit_account', {
+            self.raise_user_error('same_account', {
                     'account': self.account.rec_name,
                     'line': self.rec_name,
                     'journal': self.line.journal.rec_name,
