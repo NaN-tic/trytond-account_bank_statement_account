@@ -6,6 +6,8 @@ from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.transaction import Transaction
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 
 __all__ = ['StatementLine', 'StatementMoveLine']
@@ -107,18 +109,6 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'check_bank_move_amount', Check(t, t.amount != 0),
                 'Amount should be a positive or negative value.'),
         ]
-        cls._error_messages.update({
-                'account_not_bank_reconcile': (
-                    'The of Bank Statement Journal "%s" is not checked as '
-                    '"Bank Conciliation".'),
-                'account_statement_journal': ('Please provide '
-                    'debit and credit account on statement journal "%s".'),
-                'same_account': ('Account "%(account)s" in '
-                    'statement line "%(line)s" is the same as the one '
-                    'configured on journal "%(journal)s".'),
-                'amount_greater_invoice_amount_to_pay': ('Amount "%s" is '
-                    'greater than the amount to pay of invoice.'),
-                })
 
     @fields.depends('line')
     def on_change_with_date(self):
@@ -268,8 +258,9 @@ class StatementMoveLine(ModelSQL, ModelView):
             amount = Lang.format(lang,
                 '%.' + str(self.line.company_currency.digits) + 'f',
                 self.amount, True)
-            self.raise_user_error('amount_greater_invoice_amount_to_pay',
-                    error_args=(amount,))
+            raise UserError(gettext(
+                'account_bank_statement_account.amount_greater_invoice_amount_to_pay',
+                    amount=amount))
 
     def _get_move(self):
         pool = Pool()
@@ -322,17 +313,20 @@ class StatementMoveLine(ModelSQL, ModelView):
         account = journal.account
 
         if not account:
-            self.raise_user_error('account_statement_journal',
-                journal.rec_name)
+            raise UserError(
+            gettext('account_bansk_statement_account.account_statement_journal',
+                journal=journal.rec_name))
         if not account.bank_reconcile:
-            self.raise_user_error('account_not_bank_reconcile',
-                journal.rec_name)
+            raise UserError(
+            gettext('account_bansk_statement_account.account_not_bank_reconcile',
+                journal=journal.rec_name))
         if self.account == account:
-            self.raise_user_error('same_account', {
-                    'account': self.account.rec_name,
-                    'line': self.rec_name,
-                    'journal': self.line.journal.rec_name,
-                    })
+            raise UserError(
+                gettext('account_bansk_statement_account.same_account',
+                    account=self.account.rec_name,
+                    line=self.rec_name,
+                    journal=self.line.journal.rec_name))
+
 
         if amount_second_currency:
             amount_second_currency = -amount_second_currency

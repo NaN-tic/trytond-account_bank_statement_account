@@ -1,20 +1,13 @@
 from trytond.model import ModelView, Workflow
 from trytond.pool import Pool, PoolMeta
+from trytond.i18n import gettext
+from trytond.exceptions import UserError
 
 __all__ = ['Invoice']
 
 
 class Invoice(metaclass=PoolMeta):
     __name__ = 'account.invoice'
-
-    @classmethod
-    def __setup__(cls):
-        super(Invoice, cls).__setup__()
-        cls._error_messages.update({
-                'invoice_in_statement_move_line': ('Invoice "%(invoice)s" '
-                    'cannot be moved to "Draft" state because it is already '
-                    'used in statement line "%(statement_line)s".'),
-                })
 
     @classmethod
     @ModelView.button
@@ -26,10 +19,9 @@ class Invoice(metaclass=PoolMeta):
             limit=1)
         if lines:
             line, = lines
-            cls.raise_user_error('invoice_in_statement_move_line', {
-                    'invoice': line.invoice.rec_name,
-                    'statement_line': line.line.rec_name,
-                    })
+            raise UserError(gettext(
+                'account_bank_statement_account.invoice_in_statement_move_line',
+                    invoice=line.invoice.rec_name,
+                    statement_line=line.line.rec_name))
+
         super(Invoice, cls).draft(invoices)
-
-
