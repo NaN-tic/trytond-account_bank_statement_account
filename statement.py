@@ -4,10 +4,11 @@ from decimal import Decimal
 
 from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Not, Equal, If, Bool, Null
+from trytond.pyson import Eval, Not, Equal, If, Bool
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
+from sql import Null
 
 
 __all__ = ['StatementLine', 'StatementMoveLine']
