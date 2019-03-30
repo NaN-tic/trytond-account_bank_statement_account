@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Not, Equal, If, Bool
+from trytond.pyson import Eval, Not, Equal, If, Bool, Null
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
@@ -86,7 +86,7 @@ class StatementMoveLine(ModelSQL, ModelView):
     account = fields.Many2One('account.account', 'Account', required=True,
         domain=[
             ('company', '=', Eval('_parent_line', {}).get('company', 0)),
-            ('kind', '!=', 'view'),
+            ('type', '!=', Null),
             ])
     description = fields.Char('Description')
     move = fields.Many2One('account.move', 'Account Move', readonly=True)
