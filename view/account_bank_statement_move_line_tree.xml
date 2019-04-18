@@ -3,7 +3,7 @@
 this repository contains the full copyright notices and license terms. -->
 <tree editable="top">
     <field name="line"/>
-    <field name="date"/>
+    <field name="date" widget="date"/>
     <field name="amount"/>
     <field name="invoice"/>
     <field name="party"/>
