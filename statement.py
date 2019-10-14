@@ -78,6 +78,7 @@ class StatementMoveLine(ModelSQL, ModelView):
     party = fields.Many2One('party.party', 'Party',
         states={
             'required': Eval('party_required', False),
+            'invisible': ~Eval('party_required', False),
             },
         depends=['party_required'])
     party_required = fields.Function(fields.Boolean('Party Required'),
