@@ -112,12 +112,13 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'Amount should be a positive or negative value.'),
         ]
 
-    @fields.depends('line')
+    @fields.depends('_parent_line.date', 'line')
     def on_change_with_date(self):
         if self.line and self.line.date:
             return self.line.date.date()
 
-    @fields.depends('line')
+    @fields.depends('_parent_line.company_amount', '_parent_line.moves_amount',
+        'line')
     def on_change_with_amount(self):
         if self.line:
             return self.line.company_amount - self.line.moves_amount
