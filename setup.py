@@ -57,13 +57,13 @@ if minor_version % 2:
 else:
     branch = series
 dependency_links = [
-    ('hg+https://bitbucket.org/trytonspain/'
+    ('git+https://github.com/trytonspain/'
         'trytond-account_bank_statement@%(branch)s'
         '#egg=trytonspain-account_bank_statement-%(series)s' % {
             'branch': branch,
             'series': series,
             }),
-    ('hg+https://bitbucket.org/trytonspain/'
+    ('git+https://github.com/trytonspain/'
         'trytond-account_move_draft@%(branch)s'
         '#egg=trytonspain-account_move_draft-%(series)s' % {
             'branch': branch,
