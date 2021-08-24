@@ -1,7 +1,6 @@
 # The COPYRIGHT file at the top level of this repository contains the full
 # copyright notices and license terms.
 from decimal import Decimal
-
 from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, Not, Equal, If, Bool
@@ -9,6 +8,7 @@ from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from sql import Null
+from trytond.modules.currency.fields import Monetary
 
 
 __all__ = ['StatementLine', 'StatementMoveLine']
@@ -75,8 +75,10 @@ class StatementMoveLine(ModelSQL, ModelView):
     line = fields.Many2One('account.bank.statement.line', 'Line',
         required=True, ondelete='CASCADE')
     date = fields.Date('Date', required=True)
-    amount = fields.Numeric('Amount', required=True,
-        digits=(16, Eval('_parent_statement', {}).get('currency_digits', 2)))
+    currency = fields.Function(fields.Many2One('currency.currency', 'Currency'),
+        'on_change_with_currency')
+    amount = Monetary('Amount', required=True,
+        currency='currency', digits='currency')
     party = fields.Many2One('party.party', 'Party',
         states={
             'required': Eval('party_required', False),
@@ -111,6 +113,11 @@ class StatementMoveLine(ModelSQL, ModelView):
                 'check_bank_move_amount', Check(t, t.amount != 0),
                 'Amount should be a positive or negative value.'),
         ]
+
+    @fields.depends('line', '_parent_line.statement')
+    def on_change_with_currency(self, name=None):
+        if self.line and self.line.statement.currency:
+            return self.line.statement.currency.id
 
     @fields.depends('_parent_line.date', 'line')
     def on_change_with_date(self):
