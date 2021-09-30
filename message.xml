@@ -3,9 +3,6 @@
 this repository contains the full copyright notices and license terms. -->
 <tryton>
     <data grouped="1">
-      <record model="ir.message" id="invoice_in_statement_move_line">
-          <field name="text">Invoice "%(invoice)s" cannot be moved to "Draft" state because it is already used in statement line "%(statement_line)s".</field>
-      </record>
       <record model="ir.message" id="account_not_bank_reconcile">
           <field name="text">The of Bank Statement Journal "%(journal)s" is not checked as "Bank Conciliation".</field>
       </record>
@@ -18,6 +15,5 @@ this repository contains the full copyright notices and license terms. -->
       <record model="ir.message" id="amount_greater_invoice_amount_to_pay">
           <field name="text">Amount "%(amount)s" is greater than the amount to pay of invoice.</field>
       </record>
-
-      </data>
+    </data>
 </tryton>
