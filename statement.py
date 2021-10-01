@@ -4,7 +4,7 @@ from decimal import Decimal
 
 from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, Not, Equal, If, Bool
+from trytond.pyson import Eval, Not, Equal
 from trytond.transaction import Transaction
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
@@ -57,15 +57,48 @@ class StatementLine(metaclass=PoolMeta):
         pool = Pool()
         Move = pool.get('account.move')
         Reconciliation = pool.get('account.move.reconciliation')
+        CancelMove = pool.get('account.move.cancel', type='wizard')
+        Invoice = pool.get('account.invoice')
 
-        delete_moves = [x.move for x in self.lines if x.move]
-        reconciliations = [x.reconciliation for m in delete_moves
-            for x in m.lines if x.reconciliation]
+        invoice = Invoice.__table__()
+        cursor = Transaction().connection.cursor()
+
+        # 1. remove reconciliation
+        # 2. cancel move by wizard (do reconciliation)
+        # 3. copy move and assign new move at statement line and invoice
+        to_cancel = []
+        reconciliations = []
+        for line in self.lines:
+            if not line.move:
+                continue
+
+            for line in line.move.lines:
+                if line.reconciliation:
+                    reconciliations.append(line.reconciliation)
+            to_cancel.append(line.move)
+
         if reconciliations:
             Reconciliation.delete(reconciliations)
-        if delete_moves:
-            Move.draft(delete_moves)
-            Move.delete(delete_moves)
+
+        Transaction().set_context(active_ids=[m.id for m in to_cancel])
+        session_id, _, _ = CancelMove.create()
+        cancel_move = CancelMove(session_id)
+        cancel_move.default.description = None
+        cancel_move.transition_cancel()
+        CancelMove.delete(session_id)
+
+        for line in self.lines:
+            if not line.move:
+                continue
+
+            new_move, = Move.copy([line.move])
+            line.move = new_move
+            line.save()
+            if new_move.origin and isinstance(new_move.origin, Invoice):
+                cursor.execute(*invoice.update(
+                    columns=[invoice.move, invoice.state],
+                    values=[new_move.id, 'posted'],
+                    where=( (invoice.id == new_move.origin.id) )))
 
 
 class StatementMoveLine(ModelSQL, ModelView):
