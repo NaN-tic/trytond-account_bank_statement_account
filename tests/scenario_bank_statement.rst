@@ -126,3 +126,11 @@ Create bank statement lines::
     >>> set([x.description for x in st_move_line.move.lines]) == set(
     ...         ['Description'])
     True
+
+Cancel bank statement lines::
+
+    >>> move = statement_line.lines[0].move
+    >>> statement_line.click('cancel')
+    >>> statement_line.click('draft')
+    >>> statement_line.lines[0].move != move
+    True
