@@ -27,6 +27,30 @@ class StatementLine(metaclass=PoolMeta):
 
     @classmethod
     @ModelView.button
+    def draft(cls, statement_lines):
+        pool = Pool()
+        StatementMoveLine = pool.get('account.bank.statement.move.line')
+
+        statement_move_line = StatementMoveLine.__table__()
+
+        cursor = Transaction().connection.cursor()
+
+        to_write = []
+        for st_line in statement_lines:
+            for line in st_line.lines:
+                # if line has a move related, set to null
+                if line.move:
+                    to_write.append(line.id)
+
+        if to_write:
+            cursor.execute(*statement_move_line.update(
+                columns=[statement_move_line.move],
+                values=[None],
+                where=( (statement_move_line.id.in_(to_write)) )))
+        super(StatementLine, cls).draft(statement_lines)
+
+    @classmethod
+    @ModelView.button
     def post(cls, statement_lines):
         for st_line in statement_lines:
             for line in st_line.lines:
@@ -86,19 +110,6 @@ class StatementLine(metaclass=PoolMeta):
         cancel_move.default.description = None
         cancel_move.transition_cancel()
         CancelMove.delete(session_id)
-
-        for line in self.lines:
-            if not line.move:
-                continue
-
-            new_move, = Move.copy([line.move])
-            line.move = new_move
-            line.save()
-            if new_move.origin and isinstance(new_move.origin, Invoice):
-                cursor.execute(*invoice.update(
-                    columns=[invoice.move, invoice.state],
-                    values=[new_move.id, 'posted'],
-                    where=( (invoice.id == new_move.origin.id) )))
 
 
 class StatementMoveLine(ModelSQL, ModelView):
