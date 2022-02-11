@@ -38,7 +38,7 @@ class StatementLine(metaclass=PoolMeta):
         amount = super(StatementLine, self).on_change_with_moves_amount(name)
         if self.state == 'posted':
             return amount
-        amount += sum(l.amount or Decimal('0.0') for l in self.lines)
+        amount += sum(x.amount or Decimal('0.0') for x in self.lines)
         if self.company_currency:
             amount = self.company_currency.round(amount)
         return amount
@@ -46,10 +46,10 @@ class StatementLine(metaclass=PoolMeta):
     @classmethod
     @ModelView.button
     def cancel(cls, statement_lines):
-        super(StatementLine, cls).cancel(statement_lines)
         with Transaction().set_context({
                     'from_account_bank_statement_line': True,
                     }):
+            super(StatementLine, cls).cancel(statement_lines)
             for st_line in statement_lines:
                 st_line.reset_account_move()
 
@@ -269,8 +269,8 @@ class StatementMoveLine(ModelSQL, ModelView):
                 '%.' + str(self.line.company_currency.digits) + 'f',
                 self.amount, True)
             raise UserError(gettext(
-                'account_bank_statement_account.amount_greater_invoice_amount_to_pay',
-                    amount=amount))
+                'account_bank_statement_account.'
+                'amount_greater_invoice_amount_to_pay', amount=amount))
 
     def _get_move(self):
         pool = Pool()
@@ -324,19 +324,18 @@ class StatementMoveLine(ModelSQL, ModelView):
 
         if not account:
             raise UserError(
-            gettext('account_bansk_statement_account.account_statement_journal',
-                journal=journal.rec_name))
+            gettext('account_bansk_statement_account.'
+                'account_statement_journal', journal=journal.rec_name))
         if not account.bank_reconcile:
             raise UserError(
-            gettext('account_bansk_statement_account.account_not_bank_reconcile',
-                journal=journal.rec_name))
+            gettext('account_bansk_statement_account.'
+                'account_not_bank_reconcile', journal=journal.rec_name))
         if self.account == account:
             raise UserError(
                 gettext('account_bansk_statement_account.same_account',
                     account=self.account.rec_name,
                     line=self.rec_name,
                     journal=self.line.journal.rec_name))
-
 
         if amount_second_currency:
             amount_second_currency = -amount_second_currency
