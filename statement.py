@@ -324,15 +324,15 @@ class StatementMoveLine(ModelSQL, ModelView):
 
         if not account:
             raise UserError(
-            gettext('account_bansk_statement_account.'
+            gettext('account_bank_statement_account.'
                 'account_statement_journal', journal=journal.rec_name))
         if not account.bank_reconcile:
             raise UserError(
-            gettext('account_bansk_statement_account.'
+            gettext('account_bank_statement_account.'
                 'account_not_bank_reconcile', journal=journal.rec_name))
         if self.account == account:
             raise UserError(
-                gettext('account_bansk_statement_account.same_account',
+                gettext('account_bank_statement_account.same_account',
                     account=self.account.rec_name,
                     line=self.rec_name,
                     journal=self.line.journal.rec_name))
