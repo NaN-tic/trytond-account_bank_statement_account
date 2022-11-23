@@ -18,6 +18,8 @@ this repository contains the full copyright notices and license terms. -->
       <record model="ir.message" id="amount_greater_invoice_amount_to_pay">
           <field name="text">Amount "%(amount)s" is greater than the amount to pay of invoice.</field>
       </record>
-
+      <record model="ir.message" id="account_statement_line_currency">
+          <field name="text">The Bank Statement Journal "%(journal)s" has a different second currency of the account "%(account)s". And that's not allowed.</field>
+      </record>
       </data>
 </tryton>
