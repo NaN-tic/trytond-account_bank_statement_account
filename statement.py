@@ -33,11 +33,9 @@ class StatementLine(metaclass=PoolMeta):
                 line.create_move()
         super(StatementLine, cls).post(statement_lines)
 
-    @fields.depends('bank_lines', 'state', 'company_currency', 'lines')
+    @fields.depends('state', 'company_currency', 'lines')
     def on_change_with_moves_amount(self, name=None):
         amount = super(StatementLine, self).on_change_with_moves_amount(name)
-        if self.state == 'posted':
-            return amount
         amount += sum(x.amount or Decimal('0.0') for x in self.lines)
         if self.company_currency:
             amount = self.company_currency.round(amount)
@@ -215,11 +213,6 @@ class StatementMoveLine(ModelSQL, ModelView):
         journal = self.line.journal
         account = journal.account
 
-        st_move_line, = [x for x in move.lines if x.account == account]
-        bank_line, = st_move_line.bank_lines
-        bank_line.bank_statement_line = self.line
-        bank_line.save()
-
         self.move = move
         self.save()
         if self.invoice:
@@ -289,7 +282,15 @@ class StatementMoveLine(ModelSQL, ModelView):
         MoveLine = pool.get('account.move.line')
         Currency = Pool().get('currency.currency')
         amount = self.amount
-        if self.line.journal.currency != self.line.company.currency:
+        if ((self.line.journal.currency != self.line.company.currency) or
+                (self.account and self.account.second_currency)):
+            if (self.account and self.account.second_currency and
+                    self.account.second_currency != self.line.journal.currency):
+                raise UserError(
+                    gettext('account_bank_statement_account.'
+                        'account_statement_line_currency',
+                        journal=self.line.journal.rec_name,
+                        account=self.account.rec_name))
             second_currency = self.line.journal.currency.id
             with Transaction().set_context(date=self.line.date.date()):
                 amount_second_currency = abs(Currency.compute(
