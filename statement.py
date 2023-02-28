@@ -114,8 +114,9 @@ class StatementMoveLine(ModelSQL, ModelView):
 
     @fields.depends('line', '_parent_line.statement')
     def on_change_with_currency(self, name=None):
-        if self.line and self.line.statement.currency:
-            return self.line.statement.currency.id
+        if (self.line and self.line.statement.company and
+                self.line.statement.company.currency):
+            return self.line.statement.company.currency.id
 
     @fields.depends('_parent_line.date', 'line')
     def on_change_with_date(self):
