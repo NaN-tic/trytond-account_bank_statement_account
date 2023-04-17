@@ -231,7 +231,7 @@ class StatementMoveLine(ModelSQL, ModelView):
                     self.amount, self.line.company_currency)
 
             reconcile_lines = self.invoice.get_reconcile_lines_for_amount(
-                amount)
+                amount, self.line.company_currency)
             for move_line in move.lines:
                 if move_line.account == self.invoice.account:
                     Invoice.write([self.invoice], {
