@@ -11,8 +11,6 @@ from sql import Null
 from trytond.modules.currency.fields import Monetary
 
 
-__all__ = ['StatementLine', 'StatementMoveLine']
-
 POSTED_STATES = {
     'readonly': Not(Equal(Eval('state'), 'confirmed'))
     }
@@ -280,6 +278,7 @@ class StatementMoveLine(ModelSQL, ModelView):
             date=self.date,
             lines=move_lines,
             description=self.description,
+            origin=self.line.statement,
             )
 
     def _get_move_lines(self):
@@ -319,6 +318,7 @@ class StatementMoveLine(ModelSQL, ModelView):
                 party=self.party if self.account.party_required else None,
                 second_currency=second_currency,
                 amount_second_currency=amount_second_currency,
+                origin=self.line,
                 ))
 
         journal = self.line.journal
@@ -350,6 +350,8 @@ class StatementMoveLine(ModelSQL, ModelView):
                 if account.party_required else None),
             second_currency=second_currency,
             amount_second_currency=amount_second_currency,
+            origin=self.line,
+            move_origin=self.line.statement,
             )
         move_lines.append(bank_move)
         return move_lines
