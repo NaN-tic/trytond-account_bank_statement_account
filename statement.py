@@ -216,9 +216,6 @@ class StatementMoveLine(ModelSQL, ModelView):
         move.save()
         Move.post([move])
 
-        journal = self.line.journal
-        account = journal.account
-
         self.move = move
         self.save()
         if self.invoice:
