@@ -126,6 +126,9 @@ Create bank statement lines::
     Decimal('80.00')
     >>> st_move_line.move.description == 'Description'
     True
-    >>> set([x.description for x in st_move_line.move.lines]) == set(
+    >>> set([x.move_description_used for x in st_move_line.move.lines]) == set(
     ...         ['Description'])
+    True
+    >>> set([x.description_used for x in st_move_line.move.lines]) == set(
+    ...         ['Statement Line'])
     True
