@@ -62,7 +62,8 @@ class StatementLine(metaclass=PoolMeta):
             Reconciliation.delete(reconciliations)
         if cancel_moves:
             for move in cancel_moves:
-                cancel_move = Move.cancel(cancel_moves)
+                cancel_move = move.cancel()
+
             lines = [l for l in move + cancel_move if l.account.reconcile]
             MoveLine.reconcilie(lines)
             cancel_move.origin = self
