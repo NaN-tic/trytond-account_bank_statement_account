@@ -63,7 +63,8 @@ class StatementLine(metaclass=PoolMeta):
             for move in cancel_moves:
                 cancel_move = move.cancel()
 
-                lines = [l for m in [move, cancel_move] for l in m.lines if l.account.reconcile]
+                lines = [l for m in [move, cancel_move] for l in m.lines
+                    if l.account.reconcile]
                 MoveLine.reconcilie(lines)
                 cancel_move.origin = self
                 cancel_move.save()
