@@ -93,7 +93,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         domain=[
             ('company', '=', Eval('_parent_line', {}).get('company', 0)),
             ('type', '!=', Null),
-            ], depends=['line'])
+            ])
     description = fields.Char('Description')
     move = fields.Many2One('account.move', 'Account Move', readonly=True)
     invoice = fields.Many2One('account.invoice', 'Invoice',
