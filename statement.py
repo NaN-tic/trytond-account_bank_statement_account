@@ -85,8 +85,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         states={
             'required': Eval('party_required', False),
             'invisible': ~Eval('party_required', False),
-            },
-        depends=['party_required'])
+            })
     party_required = fields.Function(fields.Boolean('Party Required'),
         'on_change_with_party_required')
     account = fields.Many2One('account.account', 'Account', required=True,
@@ -104,8 +103,7 @@ class StatementMoveLine(ModelSQL, ModelView):
             If(Eval('_parent_line', {}).get('state') != 'posted',
                 ('state', '=', 'posted'),
                 ('state', '!=', '')),
-            ],
-        depends=['line', 'party', 'account'])
+            ])
 
     @classmethod
     def __setup__(cls):
