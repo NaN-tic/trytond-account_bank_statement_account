@@ -125,7 +125,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         'line')
     def on_change_with_amount(self):
         if self.line:
-            return self.line.company_amount - (self.line.moves_amount or _ZERO)
+            return (self.line.company_amount or _ZERO) - (self.line.moves_amount or _ZERO)
 
     @fields.depends('account')
     def on_change_with_party_required(self, name=None):
