@@ -8,7 +8,7 @@ from configparser import ConfigParser
 
 MODULE = 'account_bank_statement_account'
 PREFIX = 'trytonspain'
-MODULE2PREFIX = {'account_bank_statement': 'trytonspain', 'account_move_draft': 'trytonspain'}
+MODULE2PREFIX = {'account_bank_statement': 'trytonspain'}
 
 
 def read(fname):
@@ -49,7 +49,7 @@ requires += [get_require_version('trytond_account_invoice')]
 
 tests_require = [
     get_require_version('proteus'),
-    
+
     ]
 
 series = '%s.%s' % (major_version, minor_version)
@@ -62,14 +62,14 @@ dependency_links = [
    ('git+https://github.com/trytonspain/'
        'trytond-account_bank_statement@%(branch)s'
        '#egg=trytonspain-account_bank_statement%(series)s'%{
-               'branch': branch, 
+               'branch': branch,
                'series': series,}),
 
 
    ('git+https://github.com/trytonspain/'
        'trytond-account_move_draft@%(branch)s'
        '#egg=trytonspain-account_move_draft%(series)s'%{
-               'branch': branch, 
+               'branch': branch,
                'series': series,}),
 ]
 
