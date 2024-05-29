@@ -34,7 +34,7 @@ class StatementLine(metaclass=PoolMeta):
     @fields.depends('state', 'company_currency', 'lines')
     def on_change_with_moves_amount(self, name=None):
         amount = super(StatementLine, self).on_change_with_moves_amount(name)
-        amount += sum(x.amount or Decimal('0.0') for x in self.lines)
+        amount += sum(x.amount or Decimal(0) for x in self.lines)
         if self.company_currency:
             amount = self.company_currency.round(amount)
         return amount
@@ -243,7 +243,7 @@ class StatementMoveLine(ModelSQL, ModelView):
                             'payment_lines': [('add', [move_line.id])],
                             })
                     break
-            if reconcile_lines[1] == Decimal('0.0'):
+            if reconcile_lines[1] == Decimal(0):
                 lines = reconcile_lines[0] + [move_line]
                 MoveLine.reconcile(lines)
         return move
