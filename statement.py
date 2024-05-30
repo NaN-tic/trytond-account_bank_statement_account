@@ -318,7 +318,7 @@ class StatementMoveLine(ModelSQL, ModelView):
 
         move_lines = []
         move_lines.append(MoveLine(
-                description=self.description,
+                description=self.line.description or self.description,
                 debit=amount < _ZERO and -amount or _ZERO,
                 credit=amount >= _ZERO and amount or _ZERO,
                 account=self.account,
@@ -349,7 +349,7 @@ class StatementMoveLine(ModelSQL, ModelView):
         if amount_second_currency:
             amount_second_currency = -amount_second_currency
         bank_move = MoveLine(
-            description=self.description,
+            description=self.line.description or self.description,
             debit=amount >= _ZERO and amount or _ZERO,
             credit=amount < _ZERO and -amount or _ZERO,
             account=account,
