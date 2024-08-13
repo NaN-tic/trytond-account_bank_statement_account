@@ -20,13 +20,11 @@ class Test(unittest.TestCase):
 
     def test(self):
 
-# Imports
-
         today = datetime.date.today()
         now = datetime.datetime.now()
 
         # Install account_bank_statment_account Module
-        config = activate_modules('account_bank_statement_account')
+        activate_modules('account_bank_statement_account')
 
         # Create company
         currency = get_currency('EUR')
@@ -43,13 +41,10 @@ class Test(unittest.TestCase):
         accounts = get_accounts(company)
         receivable = accounts['receivable']
         revenue = accounts['revenue']
-        expense = accounts['expense']
         cash = accounts['cash']
         cash.bank_reconcile = True
         cash.reconcile = True
         cash.save()
-        Journal = Model.get('account.journal')
-        cash_journal, = Journal.find([('type', '=', 'cash')])
 
         # Create party
         Party = Model.get('party.party')
