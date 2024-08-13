@@ -1,8 +1,3 @@
-# ===============================
-# Account Bank Statement Scenario
-# ===============================
-
-# Imports
 from trytond.modules.account_invoice.tests.tools import set_fiscalyear_invoice_sequences
 from trytond.modules.account.tests.tools import create_fiscalyear, create_chart, get_accounts
 from trytond.modules.company.tests.tools import create_company, get_company
@@ -29,7 +24,7 @@ class Test(unittest.TestCase):
         now = datetime.datetime.now()
 
         # Install account_bank_statment_account Module
-        config = activate_modules('account_bank_statement_account')
+        activate_modules('account_bank_statement_account')
 
         # Create company
         currency = get_currency('EUR')
@@ -46,13 +41,10 @@ class Test(unittest.TestCase):
         accounts = get_accounts(company)
         receivable = accounts['receivable']
         revenue = accounts['revenue']
-        expense = accounts['expense']
         cash = accounts['cash']
         cash.bank_reconcile = True
         cash.reconcile = True
         cash.save()
-        Journal = Model.get('account.journal')
-        cash_journal, = Journal.find([('type', '=', 'cash')])
 
         # Create party
         Party = Model.get('party.party')
@@ -91,9 +83,7 @@ class Test(unittest.TestCase):
         line2.credit = Decimal('80.0')
         line2.party = party
         move.click('post')
-        self.assertEqual(move.state
-        , 'posted'
-        )
+        self.assertEqual(move.state, 'posted')
 
         # Create bank statement
         BankStatement = Model.get('account.bank.statement')
@@ -108,9 +98,8 @@ class Test(unittest.TestCase):
         statement_line.amount = Decimal('80.0')
         statement_line.account = revenue
         statement.click('confirm')
-        self.assertEqual(statement.state
-        , 'confirmed'
-        )
+        self.assertEqual(statement.state, 'confirmed')
+
         statement_line, = statement.lines
         StatementMoveLine = Model.get('account.bank.statement.move.line')
         st_move_line = StatementMoveLine()
@@ -121,9 +110,7 @@ class Test(unittest.TestCase):
         st_move_line.description = 'Description'
         st_move_line.save()
         statement_line.click('post')
-        self.assertEqual(statement_line.company_amount
-        , Decimal('80.00')
-        )
+        self.assertEqual(statement_line.company_amount, Decimal('80.00'))
         self.assertEqual(st_move_line.move.description, 'Description')
         self.assertEqual(set([x.move_description_used for x in st_move_line.move.lines]), set(['Description']))
         self.assertEqual(set([x.description_used for x in st_move_line.move.lines]), set(['Statement Line']))
