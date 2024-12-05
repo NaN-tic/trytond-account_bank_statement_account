@@ -61,6 +61,8 @@ class StatementLine(metaclass=PoolMeta):
         reconciliations = [x.reconciliation for m in moves_to_cancel
             for x in m.lines if x.reconciliation]
         if reconciliations:
+            # browse reconciliatons that require account.move lines context eval()
+            reconciliations = Reconciliation.browse(reconciliations)
             Reconciliation.delete(reconciliations)
 
         cancel_moves = []
