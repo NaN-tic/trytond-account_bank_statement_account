@@ -52,30 +52,18 @@ class StatementLine(metaclass=PoolMeta):
     def reset_account_move(self):
         pool = Pool()
         Move = pool.get('account.move')
-        MoveLine = pool.get('account.move.line')
         Reconciliation = pool.get('account.move.reconciliation')
-        StatementMoveLine = pool.get('account.bank.statement.move.line')
 
-        moves_to_cancel = [x.move for x in self.lines if x.move]
-
-        reconciliations = [x.reconciliation for m in moves_to_cancel
+        delete_moves = [x.move for x in self.lines if x.move]
+        reconciliations = [x.reconciliation for m in delete_moves
             for x in m.lines if x.reconciliation]
         if reconciliations:
             # browse reconciliatons that require account.move lines context eval()
             reconciliations = Reconciliation.browse(reconciliations)
             Reconciliation.delete(reconciliations)
-
-        cancel_moves = []
-        for move in moves_to_cancel:
-            cancel_move = move.cancel(reversal=True)
-            cancel_moves.append(cancel_move)
-
-            lines = [l for m in [move, cancel_move] for l in m.lines
-                if l.account.reconcile]
-            MoveLine.reconcile(lines)
-            cancel_move.origin = self
-        Move.post(cancel_moves)
-        StatementMoveLine.write(list(self.lines), {'move': None})
+        if delete_moves:
+            Move.draft(delete_moves)
+            Move.delete(delete_moves)
 
 
 class StatementMoveLine(ModelSQL, ModelView):
