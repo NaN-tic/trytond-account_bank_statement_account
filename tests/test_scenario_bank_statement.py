@@ -52,16 +52,8 @@ class Test(unittest.TestCase):
         party.save()
 
         # Create journals
-        Sequence = Model.get('ir.sequence')
-        SequenceType = Model.get('ir.sequence.type')
-        sequence_type, = SequenceType.find([('name', '=', 'Account Journal')])
-        sequence = Sequence(name='Bank', sequence_type=sequence_type,
-            company=company)
-        sequence.save()
         AccountJournal = Model.get('account.journal')
-        account_journal = AccountJournal(name='Statement',
-            type='cash',
-            sequence=sequence)
+        account_journal = AccountJournal(name='Statement', type='cash')
         account_journal.save()
         StatementJournal = Model.get('account.bank.statement.journal')
         statement_journal = StatementJournal(name='Test',
