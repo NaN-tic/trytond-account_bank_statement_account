@@ -4,7 +4,7 @@ from decimal import Decimal
 from trytond.model import ModelView, ModelSQL, fields, Check
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, Not, Equal, If, Bool
-from trytond.transaction import Transaction
+from trytond.transaction import Transaction, without_check_access
 from trytond.i18n import gettext
 from trytond.exceptions import UserError
 from sql import Null
@@ -217,7 +217,8 @@ class StatementMoveLine(ModelSQL, ModelView):
         Move.post([move])
 
         self.move = move
-        self.save()
+        with without_check_access():
+            self.save()
         if self.invoice:
             self._check_invoice_amount_to_pay()
 
@@ -229,9 +230,10 @@ class StatementMoveLine(ModelSQL, ModelView):
                 amount, self.line.company_currency)
             for move_line in move.lines:
                 if move_line.account == self.invoice.account:
-                    Invoice.write([self.invoice], {
-                            'payment_lines': [('add', [move_line.id])],
-                            })
+                    with without_check_access():
+                        Invoice.write([self.invoice], {
+                                'payment_lines': [('add', [move_line.id])],
+                                })
                     break
             if reconcile_lines[1] == Decimal(0):
                 lines = reconcile_lines[0] + [move_line]
