@@ -1,0 +1,136 @@
+#
+msgid ""
+msgstr ""
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "field:account.bank.statement.line,lines:"
+msgid "Transactions"
+msgstr "Tranzakciók"
+
+msgctxt "field:account.bank.statement.move.line,account:"
+msgid "Account"
+msgstr "Számla"
+
+msgctxt "field:account.bank.statement.move.line,amount:"
+msgid "Amount"
+msgstr "Összeg"
+
+msgctxt "field:account.bank.statement.move.line,create_date:"
+msgid "Create Date"
+msgstr "Létrehozás dátuma"
+
+msgctxt "field:account.bank.statement.move.line,create_uid:"
+msgid "Create User"
+msgstr "Létrehozó felhasználó"
+
+msgctxt "field:account.bank.statement.move.line,date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:account.bank.statement.move.line,description:"
+msgid "Description"
+msgstr "Leírás"
+
+msgctxt "field:account.bank.statement.move.line,id:"
+msgid "ID"
+msgstr "Azonosító"
+
+msgctxt "field:account.bank.statement.move.line,invoice:"
+msgid "Invoice"
+msgstr "Számla"
+
+msgctxt "field:account.bank.statement.move.line,line:"
+msgid "Line"
+msgstr "Sor"
+
+msgctxt "field:account.bank.statement.move.line,move:"
+msgid "Account Move"
+msgstr "Bizonylat"
+
+msgctxt "field:account.bank.statement.move.line,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:account.bank.statement.move.line,party_required:"
+msgid "Party Required"
+msgstr "Ügyfél megadása kötelező"
+
+msgctxt "field:account.bank.statement.move.line,rec_name:"
+msgid "Record Name"
+msgstr "Rekord neve"
+
+msgctxt "field:account.bank.statement.move.line,write_date:"
+msgid "Write Date"
+msgstr "Módosítás dátuma"
+
+msgctxt "field:account.bank.statement.move.line,write_uid:"
+msgid "Write User"
+msgstr "Módosító felhasználó"
+
+msgctxt "model:account.bank.statement.move.line,name:"
+msgid "Statement Move Line"
+msgstr "Kivonat könyvelési sora"
+
+#, python-format
+msgctxt "model:ir.message,text:account_not_bank_reconcile"
+msgid ""
+"The of Bank Statement Journal \"%(journal)s\" is not checked as \"Bank "
+"Conciliation\"."
+msgstr ""
+"A(z) „%(journal)s” bankkivonatnaplónál nincs bejelölve a „Banki egyeztetés”."
+
+#, python-format
+msgctxt "model:ir.message,text:account_statement_journal"
+msgid ""
+"Please provide debit and credit account on statement journal "
+"\"%(journal)s\"."
+msgstr ""
+"Adja meg a tartozik és követel számlát a(z) „%(journal)s” kivonatnaplónál."
+
+#, python-format
+msgctxt "model:ir.message,text:amount_greater_invoice_amount_to_pay"
+msgid "Amount \"%(amount)s\" is greater than the amount to pay of invoice."
+msgstr "A(z) „%(amount)s” összeg meghaladja a számla fizetendő összegét."
+
+#, python-format
+msgctxt "model:ir.message,text:invoice_in_statement_move_line"
+msgid ""
+"Invoice \"%(invoice)s\" cannot be moved to \"Draft\" state because it is "
+"already used in statement line \"%(statement_line)s\"."
+msgstr ""
+"A(z) „%(invoice)s” számla nem állítható vissza piszkozatra, mert már "
+"használatban van a(z) „%(statement_line)s” kivonatsorban."
+
+#, python-format
+msgctxt "model:ir.message,text:same_account"
+msgid ""
+"Account \"%(account)s\" in statement line \"%(line)s\" is the same as the "
+"one configured on journal \"%(journal)s\"."
+msgstr ""
+"A(z) „%(line)s” kivonatsor „%(account)s” számlája megegyezik a(z) "
+"„%(journal)s” naplóban beállított számlával."
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Line Move Line"
+msgstr "Kivonatsor könyvelési sora"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Lines"
+msgstr "Számlakivonat sorok"
+
+msgctxt "field:account.bank.statement.move.line,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+#, python-format
+msgctxt "model:ir.message,text:account_statement_line_currency"
+msgid ""
+"The Bank Statement Journal \"%(journal)s\" has a different second currency "
+"of the account \"%(account)s\". And that's not allowed."
+msgstr ""
+"A(z) „%(journal)s” bankkivonatnapló második pénzneme eltér a(z) "
+"„%(account)s” számla második pénznemétől. Ez nem megengedett."
