@@ -1,0 +1,136 @@
+#
+msgid ""
+msgstr ""
+"Language: km\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "field:account.bank.statement.line,lines:"
+msgid "Transactions"
+msgstr "ប្រតិបត្តិការ"
+
+msgctxt "field:account.bank.statement.move.line,account:"
+msgid "Account"
+msgstr "គណនី"
+
+msgctxt "field:account.bank.statement.move.line,amount:"
+msgid "Amount"
+msgstr "ចំនួនទឹកប្រាក់"
+
+msgctxt "field:account.bank.statement.move.line,create_date:"
+msgid "Create Date"
+msgstr "កាលបរិច្ឆេទបង្កើត"
+
+msgctxt "field:account.bank.statement.move.line,create_uid:"
+msgid "Create User"
+msgstr "អ្នកបង្កើត"
+
+msgctxt "field:account.bank.statement.move.line,date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:account.bank.statement.move.line,description:"
+msgid "Description"
+msgstr "សេចក្តីពិពណ៌នា"
+
+msgctxt "field:account.bank.statement.move.line,id:"
+msgid "ID"
+msgstr "ID"
+
+msgctxt "field:account.bank.statement.move.line,invoice:"
+msgid "Invoice"
+msgstr "វិក្កយបត្រ"
+
+msgctxt "field:account.bank.statement.move.line,line:"
+msgid "Line"
+msgstr "បន្ទាត់"
+
+msgctxt "field:account.bank.statement.move.line,move:"
+msgid "Account Move"
+msgstr "កំណត់ត្រាគណនេយ្យ"
+
+msgctxt "field:account.bank.statement.move.line,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:account.bank.statement.move.line,party_required:"
+msgid "Party Required"
+msgstr "តម្រូវឱ្យមានភាគី"
+
+msgctxt "field:account.bank.statement.move.line,rec_name:"
+msgid "Record Name"
+msgstr "ឈ្មោះកំណត់ត្រា"
+
+msgctxt "field:account.bank.statement.move.line,write_date:"
+msgid "Write Date"
+msgstr "កាលបរិច្ឆេទកែប្រែ"
+
+msgctxt "field:account.bank.statement.move.line,write_uid:"
+msgid "Write User"
+msgstr "អ្នកកែប្រែ"
+
+msgctxt "model:account.bank.statement.move.line,name:"
+msgid "Statement Move Line"
+msgstr "បន្ទាត់កំណត់ត្រាគណនេយ្យនៃរបាយការណ៍គណនី"
+
+#, python-format
+msgctxt "model:ir.message,text:account_not_bank_reconcile"
+msgid ""
+"The of Bank Statement Journal \"%(journal)s\" is not checked as \"Bank "
+"Conciliation\"."
+msgstr ""
+"ទិនានុប្បវត្តិរបាយការណ៍គណនីធនាគារ «%(journal)s» មិនបានធីក "
+"«ការផ្ទៀងផ្ទាត់សមតុល្យធនាគារ»។"
+
+#, python-format
+msgctxt "model:ir.message,text:account_statement_journal"
+msgid ""
+"Please provide debit and credit account on statement journal \"%(journal)s\"."
+msgstr ""
+"សូមផ្ដល់គណនីឥណពន្ធ និងឥណទានក្នុងទិនានុប្បវត្តិរបាយការណ៍គណនី «%(journal)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:amount_greater_invoice_amount_to_pay"
+msgid "Amount \"%(amount)s\" is greater than the amount to pay of invoice."
+msgstr "ចំនួនទឹកប្រាក់ «%(amount)s» ធំជាងចំនួនទឹកប្រាក់ត្រូវបង់នៃវិក្កយបត្រ។"
+
+#, python-format
+msgctxt "model:ir.message,text:invoice_in_statement_move_line"
+msgid ""
+"Invoice \"%(invoice)s\" cannot be moved to \"Draft\" state because it is "
+"already used in statement line \"%(statement_line)s\"."
+msgstr ""
+"មិនអាចកំណត់វិក្កយបត្រ «%(invoice)s» ទៅស្ថានភាព «សេចក្តីព្រាង» បានទេ "
+"ព្រោះវាត្រូវបានប្រើរួចហើយក្នុងបន្ទាត់របាយការណ៍គណនី «%(statement_line)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:same_account"
+msgid ""
+"Account \"%(account)s\" in statement line \"%(line)s\" is the same as the one"
+" configured on journal \"%(journal)s\"."
+msgstr ""
+"គណនី «%(account)s» ក្នុងបន្ទាត់របាយការណ៍គណនី «%(line)s» "
+"គឺដូចគ្នានឹងគណនីដែលបានកំណត់ក្នុងទិនានុប្បវត្តិ «%(journal)s»។"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Line Move Line"
+msgstr "បន្ទាត់កំណត់ត្រាគណនេយ្យនៃបន្ទាត់របាយការណ៍គណនី"
+
+msgctxt "view:account.bank.statement.move.line:"
+msgid "Statement Lines"
+msgstr "បន្ទាត់របាយការណ៍គណនី"
+
+msgctxt "field:account.bank.statement.move.line,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+#, python-format
+msgctxt "model:ir.message,text:account_statement_line_currency"
+msgid ""
+"The Bank Statement Journal \"%(journal)s\" has a different second currency of"
+" the account \"%(account)s\". And that's not allowed."
+msgstr ""
+"ទិនានុប្បវត្តិរបាយការណ៍គណនីធនាគារ «%(journal)s» មានរូបិយប័ណ្ណទីពីរខុសពីគណនី "
+"«%(account)s»។ រូបិយប័ណ្ណទាំងពីរត្រូវតែដូចគ្នា។"
